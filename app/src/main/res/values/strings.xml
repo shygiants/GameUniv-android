@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">GameUniv</string>
+    
+    <!-- Strings related to login -->
+    <string name="prompt_email">이메일</string>
+    <string name="prompt_password">패스워드</string>
+    <string name="action_sign_in">로그인</string>
+    <string name="action_sign_in_short">로그인</string>
+    <string name="error_invalid_email">이메일 주소가 잘못되었습니다</string>
+    <string name="error_invalid_password">패스워드가 너무 짧습니다</string>
+    <string name="error_incorrect_password">패스워드가 잘못되었습니다</string>
+    <string name="error_field_required">이 필드는 필수입니다</string>
+
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
