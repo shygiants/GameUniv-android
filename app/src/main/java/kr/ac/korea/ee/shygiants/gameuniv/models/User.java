@@ -5,19 +5,18 @@ package kr.ac.korea.ee.shygiants.gameuniv.models;
  */
 public class User extends Response {
 
-    private String email;
-    private String userName;
-    private String token;
+    static class InnerUser {
+        public String email;
+        public String userName;
+    }
+
+    private InnerUser user;
 
     public String getEmail() {
-        return email;
+        return user.email;
     }
 
     public String getUserName() {
-        return userName;
-    }
-
-    public String getToken() {
-        return token;
+        return user.userName;
     }
 }

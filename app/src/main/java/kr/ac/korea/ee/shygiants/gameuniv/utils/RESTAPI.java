@@ -10,7 +10,11 @@ import retrofit.Retrofit;
  */
 public class RESTAPI {
 
-    private final static String apiEndPoint = "172.30.82.89";
+//    private final static String apiEndPoint = "172.30.42.195";
+    // 학회실
+//    private final static String apiEndPoint = "192.168.0.26";
+    // 자취방
+    private final static String apiEndPoint = "192.168.0.4";
     private final static String port = "3000";
 
     private static RESTAPI ourInstance = new RESTAPI();

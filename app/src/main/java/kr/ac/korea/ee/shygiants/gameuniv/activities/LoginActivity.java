@@ -1,54 +1,40 @@
 package kr.ac.korea.ee.shygiants.gameuniv.activities;
 
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthTokens;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.Users;
+import kr.ac.korea.ee.shygiants.gameuniv.models.AuthToken;
 import kr.ac.korea.ee.shygiants.gameuniv.models.RequestBody;
-import kr.ac.korea.ee.shygiants.gameuniv.models.Response;
-import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
-import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AccountAuthenticatorActivity {
 
     // UI references.
     private EditText mEmailView;
@@ -59,9 +45,27 @@ public class LoginActivity extends AppCompatActivity {
     // APIs
     private AuthTokens authTokensAPI = RESTAPI.create(AuthTokens.class);
 
+    // Intent arg keys
+    public static final String ACCOUNT_TYPE = "ACCOUNT_TYPE";
+    public static final String AUTH_TYPE = "AUTH_TYPE";
+    public static final String ACCOUNT_NAME = "ACCOUNT_NAME";
+
+    private String authTokenType;
+    private String accountType;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        authTokenType = intent.getStringExtra(AUTH_TYPE);
+        accountType = intent.getStringExtra(ACCOUNT_TYPE);
+
+        if (authTokenType == null)
+            authTokenType = getString(R.string.auth_full_access);
+
+
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
@@ -88,8 +92,37 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+//        Intent intent = getIntent();
+//        if(!intent.getAction().equals(Intent.ACTION_MAIN)) {
+//            /* SPECIAL BEHAVIOR */
+//            mEmailSignInButton.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    returnToCaller("GameUniv: Hello World!!");
+//                }
+//            });
+//            onRequest(intent);
+//        }
     }
 
+    @Override
+    public void onBackPressed() { /* DO NOTHING */ }
+
+    private void onRequest(Intent intent) {
+        String action = intent.getAction();  // such as Intent.ACTION_VIEW
+        Uri data = intent.getData();         // data passed by caller
+
+        String uriScheme = intent.getScheme();
+
+        /* ACTION_VIEW with myscheme */
+        if(action.equals(Intent.ACTION_VIEW)
+                && uriScheme.equals("gameUniv")) {
+            Log.i("SHY", "[auth] "   + data.getAuthority());
+            Log.i("SHY", "[param1] " + data.getQueryParameter("param1"));
+            Log.i("SHY", "[param2] " + data.getQueryParameter("param2"));
+        }
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -103,8 +136,8 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -136,33 +169,34 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            authTokensAPI.getAuthToken(email, RequestBody.create(email, password))
-            .enqueue(new Callback<User>() {
+            authTokensAPI.getAuthToken(email, RequestBody.create(password))
+            .enqueue(new Callback<AuthToken>() {
                 @Override
-                public void onResponse(retrofit.Response<User> response, Retrofit retrofit) {
+                public void onResponse(retrofit.Response<AuthToken> response, Retrofit retrofit) {
                     showProgress(false);
                     switch (response.code()) {
-                        case 401: // Unauthorized
+                        case 400: // Bad Request
                             // TODO: Fancy error handling
                             mEmailView.setError(getString(R.string.error_invalid_email));
                             mPasswordView.setError(getString(R.string.error_incorrect_password));
                             mEmailView.requestFocus();
                             break;
-                        default:
-                            User user = response.body();
-                            if (user.isSuccess()) {
-                                // TODO: Login success
-                                Log.i("Token", user.getToken());
-                                loginSuccess(user.getToken());
-                            }
-
+                        case 500:
+                            // TODO: Server error handling
                             break;
-
+                        default:
+                            AuthToken authToken = response.body();
+                            if (authToken.isSuccess()) {
+                                // TODO: Login success
+                                loginSuccess(email, password, authToken);
+                            }
+                            break;
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
+                    // TODO: Something wrong on network
                     showProgress(false);
                     mEmailView.setError(getString(R.string.error_invalid_email));
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -218,8 +252,25 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void loginSuccess(String token) {
-        startActivity(new Intent(this, MainActivity.class));
+    private void loginSuccess(String email, String password, AuthToken authToken) {
+
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent();
+
+        bundle.putString(AccountManager.KEY_ACCOUNT_NAME, email);
+        bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+        bundle.putString(AccountManager.KEY_AUTHTOKEN, authToken.toString());
+
+        intent.putExtras(bundle);
+
+        AccountManager accountManager = AccountManager.get(this);
+        final Account account = new Account(email, accountType);
+
+        accountManager.addAccountExplicitly(account, password, null);
+        accountManager.setAuthToken(account, authTokenType, authToken.toString());
+
+        setAccountAuthenticatorResult(bundle);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

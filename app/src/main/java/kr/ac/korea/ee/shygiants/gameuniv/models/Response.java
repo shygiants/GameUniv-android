@@ -5,13 +5,13 @@ package kr.ac.korea.ee.shygiants.gameuniv.models;
  */
 public abstract class Response {
     protected boolean success;
-    protected String message;
+    protected String error;
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getMessage() {
-        return message;
+    public String getError() {
+        return error;
     }
 }
