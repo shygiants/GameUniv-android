@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity
                         switch (response.code()) {
                             case 401: // Unauthorized
                                 // TODO: Fancy error handling
+                                // Invalid auth token
+                                // TODO: Prompt
                                 break;
                             case 500:
                                 // TODO: Server error handling

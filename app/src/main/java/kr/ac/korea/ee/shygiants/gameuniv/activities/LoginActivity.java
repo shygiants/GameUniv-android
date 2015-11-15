@@ -8,12 +8,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 
-import android.net.Uri;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -92,37 +89,10 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-//        Intent intent = getIntent();
-//        if(!intent.getAction().equals(Intent.ACTION_MAIN)) {
-//            /* SPECIAL BEHAVIOR */
-//            mEmailSignInButton.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    returnToCaller("GameUniv: Hello World!!");
-//                }
-//            });
-//            onRequest(intent);
-//        }
     }
 
     @Override
     public void onBackPressed() { /* DO NOTHING */ }
-
-    private void onRequest(Intent intent) {
-        String action = intent.getAction();  // such as Intent.ACTION_VIEW
-        Uri data = intent.getData();         // data passed by caller
-
-        String uriScheme = intent.getScheme();
-
-        /* ACTION_VIEW with myscheme */
-        if(action.equals(Intent.ACTION_VIEW)
-                && uriScheme.equals("gameUniv")) {
-            Log.i("SHY", "[auth] "   + data.getAuthority());
-            Log.i("SHY", "[param1] " + data.getQueryParameter("param1"));
-            Log.i("SHY", "[param2] " + data.getQueryParameter("param2"));
-        }
-    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.

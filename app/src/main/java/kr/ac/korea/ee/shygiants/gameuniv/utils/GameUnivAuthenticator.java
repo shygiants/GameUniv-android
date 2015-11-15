@@ -32,6 +32,7 @@ public class GameUnivAuthenticator extends AbstractAccountAuthenticator {
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType,
                              String authTokenType, String[] requiredFeatures, Bundle options)
             throws NetworkErrorException {
+        // For adding account, we needs to prompt credentials
         final Intent intent = new Intent(context, LoginActivity.class);
         intent.putExtra(LoginActivity.ACCOUNT_TYPE, accountType);
         intent.putExtra(LoginActivity.AUTH_TYPE, authTokenType);

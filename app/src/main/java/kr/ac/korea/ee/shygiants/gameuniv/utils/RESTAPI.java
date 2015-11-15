@@ -10,7 +10,7 @@ import retrofit.Retrofit;
  */
 public class RESTAPI {
 
-//    private final static String apiEndPoint = "172.30.42.195";
+//    private final static String apiEndPoint = "172.30.21.237";
     // 학회실
 //    private final static String apiEndPoint = "192.168.0.26";
     // 자취방
@@ -30,5 +30,6 @@ public class RESTAPI {
                 .baseUrl("http://" + apiEndPoint + ":" + port)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        retrofit.client().setFollowRedirects(false);
     }
 }

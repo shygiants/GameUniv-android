@@ -10,10 +10,13 @@
     <string name="error_invalid_password">패스워드가 너무 짧습니다</string>
     <string name="error_incorrect_password">패스워드가 잘못되었습니다</string>
     <string name="error_field_required">이 필드는 필수입니다</string>
-    
+
+    <string name="auth_scheme">gameUniv</string>
     <string name="auth_account_type">kr.ac.korea.ee.shygiants</string>
     <string name="auth_full_access">Full Access</string>
     <string name="auth_full_access_label">계정에 대한 모든 권한</string>
+    <string name="auth_game_login">Game Login</string>
+    <string name="auth_game_login_label">게임 로그인을 위한 권한</string>
 
     <string name="title_activity_main">MainActivity</string>
 
