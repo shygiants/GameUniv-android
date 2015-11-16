@@ -8,8 +8,8 @@
     tools:context="kr.ac.korea.ee.shygiants.gameuniv.activities.AuthorizationActivity">
 
     <Button
-        android:onClick="getAuthCode"
-        android:text="Get Auth Code"
+        android:id="@+id/button_get_auth_code"
+        android:text="게임 로그인 허용"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

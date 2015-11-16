@@ -1,12 +1,8 @@
 package kr.ac.korea.ee.shygiants.gameuniv.activities;
 
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,25 +15,16 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.Users;
-import kr.ac.korea.ee.shygiants.gameuniv.models.AuthToken;
-import kr.ac.korea.ee.shygiants.gameuniv.models.RequestBody;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
-import kr.ac.korea.ee.shygiants.gameuniv.utils.Owner;
-import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
-import retrofit.Callback;
-import retrofit.Retrofit;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String ACCOUNT_TYPE;
-    private String FULL_ACCESS;
-
-    private Users usersAPI = RESTAPI.create(Users.class);
-
     private TextView userNameText;
     private TextView emailText;
+
+    private AuthManager authManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,71 +51,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ACCOUNT_TYPE = getString(R.string.auth_account_type);
-        FULL_ACCESS = getString(R.string.auth_full_access);
-
-        // Get auth token
-        AccountManager accountManager = AccountManager.get(this);
-        accountManager.getAuthTokenByFeatures(ACCOUNT_TYPE, FULL_ACCESS, null, this, null, null,
-                new AccountManagerCallback<Bundle>() {
-                    @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-                        Bundle bundle;
-                        try {
-                            bundle = future.getResult();
-                            final String authToken = bundle.getString(AccountManager.KEY_AUTHTOKEN);
-                            final String email = bundle.getString(AccountManager.KEY_ACCOUNT_NAME);
-                            // TODO: delete this log from the product
-                            Log.d("SHY", "EMAIL: " + email);
-                            Log.d("SHY", "AUTH_TOKEN: " + authToken);
-                            Owner.init(email, authToken);
-                            getUserInfo();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, null);
-
         userNameText = (TextView) findViewById(R.id.userNameTextView);
         emailText = (TextView) findViewById(R.id.emailTextView);
-    }
 
-    void getUserInfo() {
-        usersAPI.getUser(Owner.getEmail(), Owner.getToken())
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(retrofit.Response<User> response, Retrofit retrofit) {
-//                        showProgress(false);
-                        switch (response.code()) {
-                            case 401: // Unauthorized
-                                // TODO: Fancy error handling
-                                // Invalid auth token
-                                // TODO: Prompt
-                                break;
-                            case 500:
-                                // TODO: Server error handling
-                                break;
-                            default:
-                                User user = response.body();
-                                if (user.isSuccess()) {
-                                    // TODO: Getting user info success
-                                    Log.i("USERNAME", user.getUserName());
-                                    Log.i("EMAIL", user.getEmail());
-                                    userNameText.setText(user.getUserName());
-                                    emailText.setText(user.getEmail());
-                                }
-                                break;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        // TODO: Something wrong on network
-                        Log.e("SHY", "MainActivity onFailure");
-                        t.printStackTrace();
-                    }
-                });
-
+        authManager = AuthManager.initWithCustomCallback(this, new AuthManager.UserInfoCallback() {
+            @Override
+            public void onGettingUserInfo(User user) {
+                userNameText.setText(user.getUserName());
+                emailText.setText(user.getEmail());
+            }
+        });
     }
 
     @Override
