@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
@@ -23,6 +24,8 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     private String gameId;
     private AuthManager authManager;
 
+    private TextView informingText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,8 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
             // TODO: prompt user
             setContentView(R.layout.activity_authorization);
 
+            informingText = (TextView) findViewById(R.id.informingText);
+
             authManager = AuthManager.initWithCustomCallback(this, this);
         } else {
             fail();
@@ -46,20 +51,32 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onGettingUserInfo(User user) {
         // TODO: Display user info and prompt user
+        informingText.setText("게임이 회원님의 계정으로 로그인을 하고자 합니다.");
         findViewById(R.id.button_get_auth_code).setOnClickListener(this);
+        findViewById(R.id.button_reject).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        authManager.getAuthCode(gameId, new AuthManager.AuthCodeCallback() {
-            @Override
-            public void onGettingAuthCode(String authCode) {
-                Intent intent = new Intent();
-                intent.putExtra(AUTH_CODE, authCode);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
+        switch (v.getId()) {
+            case R.id.button_get_auth_code:
+                authManager.getAuthCode(gameId, new AuthManager.AuthCodeCallback() {
+                    @Override
+                    public void onGettingAuthCode(String authCode) {
+                        Intent intent = new Intent();
+                        intent.putExtra(AUTH_CODE, authCode);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                });
+                break;
+            case R.id.button_reject:
+                fail();
+                break;
+            default:
+                // DO NOTHING
+                break;
+        }
     }
 
     private void fail() {

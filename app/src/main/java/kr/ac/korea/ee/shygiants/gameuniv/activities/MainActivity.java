@@ -3,6 +3,8 @@ package kr.ac.korea.ee.shygiants.gameuniv.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +18,9 @@ import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
+import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity
     private TextView emailText;
 
     private AuthManager authManager;
+
+    private RecyclerView feedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +59,12 @@ public class MainActivity extends AppCompatActivity
 
         userNameText = (TextView) findViewById(R.id.userNameTextView);
         emailText = (TextView) findViewById(R.id.emailTextView);
+
+        feedView = (RecyclerView) findViewById(R.id.feed);
+        feedView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        FeedAdapter feedAdapter = new FeedAdapter();
+        ContentsStore.pushAdapter(feedAdapter);
+        feedView.setAdapter(feedAdapter);
 
         authManager = AuthManager.initWithCustomCallback(this, new AuthManager.UserInfoCallback() {
             @Override

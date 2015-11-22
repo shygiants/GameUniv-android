@@ -1,22 +1,38 @@
 package kr.ac.korea.ee.shygiants.gameuniv.models;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+
 /**
  * Created by SHYBook_Air on 15. 10. 5..
  */
 public class User extends Response {
 
-    static class InnerUser {
-        public String email;
-        public String userName;
-    }
+    private String _id;
+    private String userName;
+    private String email;
+    private ArrayList<Game> havePlayed;
 
-    private InnerUser user;
+    private String authToken;
 
     public String getEmail() {
-        return user.email;
+        return email;
     }
 
     public String getUserName() {
-        return user.userName;
+        return userName;
+    }
+
+//    public ArrayList getPlayedGames() {
+//        return havePlayed;
+//    }
+
+    public void setAuthToken(final String authToken) {
+        this.authToken = authToken;
+    }
+
+    public String getAuthToken() {
+        return authToken;
     }
 }

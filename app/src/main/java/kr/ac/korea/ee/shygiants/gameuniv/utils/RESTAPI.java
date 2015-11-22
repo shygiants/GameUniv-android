@@ -1,7 +1,5 @@
 package kr.ac.korea.ee.shygiants.gameuniv.utils;
 
-import kr.ac.korea.ee.shygiants.gameuniv.R;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthTokens;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
@@ -10,7 +8,7 @@ import retrofit.Retrofit;
  */
 public class RESTAPI {
 
-    private final static String apiEndPoint = "172.30.21.216";
+    private final static String apiEndPoint = "172.30.21.3";
     // 학회실
 //    private final static String apiEndPoint = "192.168.0.26";
     // 자취방

@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.IOException;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.activities.AuthorizationActivity;
 import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthCodes;
 import kr.ac.korea.ee.shygiants.gameuniv.apis.Users;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Response;
@@ -42,12 +43,12 @@ public class AuthManager {
 
     // Context
     private Activity context;
+    private boolean loadContents;
     private AccountManager accountManager;
 
     // For getting user info
     private String email;
     private String authToken;
-
 
     private UserInfoCallback userInfoCallback;
     private User user;
@@ -59,19 +60,19 @@ public class AuthManager {
     public static AuthManager initWithCustomCallback(Activity context, UserInfoCallback customCallback) {
         AuthManager ourInstance = new AuthManager();
         ourInstance.context = context;
+        ourInstance.loadContents = !(context instanceof AuthorizationActivity);
 
         ourInstance.ACCOUNT_TYPE = ourInstance.context.getString(R.string.auth_account_type);
         ourInstance.FULL_ACCESS = ourInstance.context.getString(R.string.auth_full_access);
 
-
         ourInstance.userInfoCallback = customCallback;
 
-        ourInstance.getAuthToken();
+        ourInstance.requestAuthToken();
 
         return ourInstance;
     }
 
-    private void getAuthToken() {
+    private void requestAuthToken() {
         accountManager = AccountManager.get(context);
         accountManager.getAuthTokenByFeatures(ACCOUNT_TYPE, FULL_ACCESS, null, context, null, null,
                 new AccountManagerCallback<Bundle>() {
@@ -109,19 +110,19 @@ public class AuthManager {
                 switch (response.code()) {
                     case 401: // Unauthorized
                         accountManager.invalidateAuthToken(ACCOUNT_TYPE, authToken);
-                        getAuthToken();
+                        requestAuthToken();
                         break;
                     case 500:
                         // TODO: Ask user to retry
                         break;
                     case 200:
-                        User tempUser = response.body();
-                        if (tempUser.isSuccess()) {
-                            user = tempUser;
-                            Log.i("AuthManager", "User is initialized");
-                            if (userInfoCallback != null)
-                                userInfoCallback.onGettingUserInfo(user);
-                        }
+                        user = response.body();
+                        user.setAuthToken(authToken);
+                        if (loadContents)
+                            ContentsStore.init(user);
+                        Log.i("AuthManager", "User is initialized");
+                        if (userInfoCallback != null)
+                            userInfoCallback.onGettingUserInfo(user);
                         break;
                 }
             }
@@ -135,7 +136,6 @@ public class AuthManager {
                 t.printStackTrace();
             }
         });
-
     }
 
     public void getUser(UserInfoCallback callback) {

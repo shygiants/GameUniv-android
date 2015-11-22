@@ -156,10 +156,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                             break;
                         default:
                             AuthToken authToken = response.body();
-                            if (authToken.isSuccess()) {
-                                // TODO: Login success
-                                loginSuccess(email, password, authToken);
-                            }
+                            // TODO: Login success
+                            loginSuccess(email, password, authToken);
                             break;
                     }
                 }
