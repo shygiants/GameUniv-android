@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by SHYBook_Air on 15. 11. 22..
@@ -25,6 +26,7 @@ public class DateFormatter {
 
     public static String format(String dateTime) {
         try {
+            serverFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Calendar currentTime = Calendar.getInstance(Locale.KOREA);
             Calendar createdAt = new GregorianCalendar();
             createdAt.setTime(serverFormat.parse(dateTime));
