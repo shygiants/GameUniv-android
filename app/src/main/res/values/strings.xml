@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GameUniv</string>
-    
+
     <!-- Strings related to login -->
     <string name="prompt_email">이메일</string>
     <string name="prompt_password">패스워드</string>
@@ -11,6 +11,7 @@
     <string name="error_incorrect_password">패스워드가 잘못되었습니다</string>
     <string name="error_field_required">이 필드는 필수입니다</string>
 
+    <string name="auth_message">게임 \'%s\'이 회원님의 계정으로 로그인을 하고자 합니다</string>
     <string name="auth_scheme">gameUniv</string>
     <string name="auth_account_type">kr.ac.korea.ee.shygiants</string>
     <string name="auth_full_access">Full Access</string>
@@ -25,6 +26,8 @@
 
     <string name="cancel">취소</string>
     <string name="confirm">확인</string>
+
+    <string name="moment_score">최고 점수</string>
 
     <string name="action_settings">Settings</string>
 </resources>

@@ -16,9 +16,12 @@
     <dimen name="card_profile_area_padding">16dp</dimen>
     <dimen name="card_profile_image_size">40dp</dimen>
     <dimen name="card_profile_image_margin">8dp</dimen>
+    <dimen name="card_game_icon_size">40dp</dimen>
 
     <dimen name="card_text_area_padding">16dp</dimen>
 
     <dimen name="card_action_area_padding">8dp</dimen>
+
+    <dimen name="icon_size">24dp</dimen>
 
 </resources>

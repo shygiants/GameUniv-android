@@ -11,6 +11,7 @@
     android:layout_marginRight="@dimen/card_margin"
     >
     <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -21,6 +22,15 @@
             android:paddingTop="@dimen/card_profile_area_padding"
             android:paddingLeft="@dimen/card_profile_area_padding"
             android:paddingRight="@dimen/card_profile_area_padding">
+
+            <ImageView
+                android:id="@+id/game_icon"
+                android:layout_width="@dimen/card_game_icon_size"
+                android:layout_height="@dimen/card_game_icon_size"
+                android:src="@drawable/ic_game"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile"
@@ -31,7 +41,7 @@
                 app:civ_border_width="0dp" />
             <TextView
                 android:textSize="14sp"
-                android:textColor="#DF000000"
+                android:textColor="@color/colorBlack87"
                 android:id="@+id/author"
                 android:layout_toRightOf="@id/profile"
                 android:layout_width="wrap_content"
@@ -39,35 +49,26 @@
             <TextView
                 android:id="@+id/created_at"
                 android:textSize="14sp"
-                android:textColor="#8A000000"
+                android:textColor="@color/colorBlack54"
                 android:layout_below="@id/author"
                 android:layout_toRightOf="@id/profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/card_text_area_padding"
-            android:paddingRight="@dimen/card_text_area_padding">
 
-            <TextView
-                android:id="@+id/content"
-                android:textSize="14sp"
-                android:textColor="#DF000000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <!--content area-->
 
-        </RelativeLayout>
         <RelativeLayout
             android:padding="@dimen/card_action_area_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <Button
-                android:text="Like"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?android:attr/borderlessButtonStyle"/>
+            <ImageButton
+                android:tint="@color/colorBlack54"
+                android:tintMode="multiply"
+                android:src="@drawable/ic_favorite"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
         </RelativeLayout>
     </LinearLayout>
 

@@ -9,8 +9,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.apis.Games;
+import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class AuthorizationActivity extends AppCompatActivity implements View.OnClickListener, AuthManager.UserInfoCallback {
 
@@ -20,6 +26,10 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
 
     // Outgoing intent keys
     public static final String AUTH_CODE = "AUTH_CODE";
+
+    private Games gamesAPI = RESTAPI.create(Games.class);
+
+    private Game game;
 
     private String gameId;
     private AuthManager authManager;
@@ -43,6 +53,21 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
             informingText = (TextView) findViewById(R.id.informingText);
 
             authManager = AuthManager.initWithCustomCallback(this, this);
+            gamesAPI.getGame(gameId).enqueue(new Callback<Game>() {
+                @Override
+                public void onResponse(Response<Game> response, Retrofit retrofit) {
+                    game = response.body();
+                    String msg = String.format(getString(R.string.auth_message), game.getGameName());
+                    informingText.setText(msg);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // TODO: Error Handling
+                    t.printStackTrace();
+                }
+            });
+
         } else {
             fail();
         }
@@ -51,7 +76,8 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onGettingUserInfo(User user) {
         // TODO: Display user info and prompt user
-        informingText.setText("게임이 회원님의 계정으로 로그인을 하고자 합니다.");
+
+
         findViewById(R.id.button_get_auth_code).setOnClickListener(this);
         findViewById(R.id.button_reject).setOnClickListener(this);
     }
@@ -60,6 +86,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_get_auth_code:
+                // TODO: Check it ends loading
                 authManager.getAuthCode(gameId, new AuthManager.AuthCodeCallback() {
                     @Override
                     public void onGettingAuthCode(String authCode) {

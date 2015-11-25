@@ -7,9 +7,13 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.DateFormatter;
  */
 public class Moment extends Response {
 
+    public static final int TEXT = 0;
+    public static final int SCORE = 1;
+
     private String _id;
     private String created_at;
     private String content;
+    private String type;
     private User author;
     private Game game;
 
@@ -20,6 +24,21 @@ public class Moment extends Response {
 
     public String getContent() {
         return content;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getViewType() {
+        switch (type) {
+            case "text":
+                return TEXT;
+            case "score":
+                return SCORE;
+            default:
+                return TEXT;
+        }
     }
 
     public User getAuthor() {

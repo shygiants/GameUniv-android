@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,26 +11,42 @@
     android:orientation="vertical"
     tools:context="kr.ac.korea.ee.shygiants.gameuniv.activities.AuthorizationActivity">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/imageView"
-        android:layout_gravity="center"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_margin="60dp"
-        android:src="@drawable/dummy_profile"
-        app:civ_border_width="0dp" />
+    <LinearLayout
+        android:gravity="center"
+        android:id="@+id/profile_area"
+        android:paddingTop="60dp"
+        android:paddingBottom="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/user_profile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/dummy_profile"
+            app:civ_border_width="0dp" />
+        <ImageView
+            android:id="@+id/game_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_game" />
+    </LinearLayout>
+
     <TextView
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/profile_area"
+        android:gravity="center_horizontal"
         android:id="@+id/informingText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
         <Button
             android:id="@+id/button_reject"
             android:text="@string/cancel"
@@ -46,4 +62,4 @@
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>
