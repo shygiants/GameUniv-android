@@ -7,13 +7,13 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <ImageView
         android:tint="@color/colorScore"
         android:src="@drawable/ic_stars"
         android:layout_gravity="center"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size" />
+
     <TextView
         android:text="@string/moment_score"
         android:textSize="24sp"

@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_camara" android:icon="@android:drawable/ic_menu_camera"
-            android:title="Import" />
-        <item android:id="@+id/nav_gallery" android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
+        <item android:id="@+id/nav_newsfeed" android:icon="@drawable/ic_view_stream"
+            android:title="@string/navigation_newsfeed" />
+        <item android:id="@+id/nav_timeline" android:icon="@drawable/ic_account_box"
+            android:title="@string/navigation_timeline" />
+        <item android:id="@+id/nav_games" android:icon="@drawable/ic_videogame_asset"
+            android:title="@string/navigation_games" />
+        <item android:id="@+id/nav_achievement" android:icon="@drawable/ic_check_circle"
+            android:title="@string/navigation_achievement" />
     </group>
 
     <item android:title="Communicate">

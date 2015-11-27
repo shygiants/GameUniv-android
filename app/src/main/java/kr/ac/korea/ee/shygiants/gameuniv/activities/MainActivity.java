@@ -3,6 +3,7 @@ package kr.ac.korea.ee.shygiants.gameuniv.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,6 +18,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
+import kr.ac.korea.ee.shygiants.gameuniv.fragments.TimelineFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity
 
     private AuthManager authManager;
 
-    private RecyclerView feedView;
+    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +63,6 @@ public class MainActivity extends AppCompatActivity
         userNameText = (TextView) findViewById(R.id.userNameTextView);
         emailText = (TextView) findViewById(R.id.emailTextView);
 
-        feedView = (RecyclerView) findViewById(R.id.feed);
-        feedView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        FeedAdapter feedAdapter = new FeedAdapter();
-        ContentsStore.pushAdapter(feedAdapter);
-        feedView.setAdapter(feedAdapter);
-
         authManager = AuthManager.initWithCustomCallback(this, new AuthManager.UserInfoCallback() {
             @Override
             public void onGettingUserInfo(User user) {
@@ -73,6 +70,9 @@ public class MainActivity extends AppCompatActivity
                 emailText.setText(user.getEmail());
             }
         });
+
+
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new NewsfeedFragment()).commit();
     }
 
     @Override
@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
+        if (id == R.id.nav_newsfeed) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_timeline) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TimelineFragment()).commit();
+        } else if (id == R.id.nav_games) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_achievement) {
 
         } else if (id == R.id.nav_share) {
 
