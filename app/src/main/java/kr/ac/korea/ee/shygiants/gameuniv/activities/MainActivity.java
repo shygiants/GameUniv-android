@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity
 
     private AuthManager authManager;
 
-    private FragmentTransaction fragmentTransaction;
+    private NewsfeedFragment newsfeedFragment;
+    private TimelineFragment timelineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new NewsfeedFragment()).commit();
+        newsfeedFragment = new NewsfeedFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, newsfeedFragment).commit();
     }
 
     @Override
@@ -114,9 +115,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_newsfeed) {
-            // Handle the camera action
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, newsfeedFragment);
+            transaction.commit();
         } else if (id == R.id.nav_timeline) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TimelineFragment()).commit();
+            if (timelineFragment == null)
+                timelineFragment = new TimelineFragment();
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, timelineFragment);
+            transaction.commit();
         } else if (id == R.id.nav_games) {
 
         } else if (id == R.id.nav_achievement) {

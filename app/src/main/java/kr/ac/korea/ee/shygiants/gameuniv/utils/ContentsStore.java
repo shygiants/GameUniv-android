@@ -19,7 +19,7 @@ public class ContentsStore {
 
     User user;
 
-    RecyclerView.Adapter feedAdapter;
+    ArrayList<RecyclerView.Adapter> adapters = new ArrayList<>();
     ArrayList<Moment> momentStore;
 
     private Moments momentsAPI = RESTAPI.create(Moments.class);
@@ -38,7 +38,7 @@ public class ContentsStore {
     }
 
     public static void pushAdapter(RecyclerView.Adapter adapter) {
-        store.feedAdapter = adapter;
+        store.adapters.add(adapter);
     }
 
     private void getFeed() {
@@ -57,8 +57,8 @@ public class ContentsStore {
                     case 200:
                         // TODO: Notify to all adapters
                         momentStore = response.body();
-                        if (feedAdapter != null)
-                            feedAdapter.notifyDataSetChanged();
+                        for (RecyclerView.Adapter adapter : adapters)
+                            adapter.notifyDataSetChanged();
                         break;
                 }
             }
