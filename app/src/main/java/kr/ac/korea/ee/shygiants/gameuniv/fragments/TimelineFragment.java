@@ -18,17 +18,25 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
  */
 public class TimelineFragment extends Fragment {
 
+    private RecyclerView feedView;
+    private FeedAdapter feedAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        feedAdapter = new FeedAdapter(FeedAdapter.Context.TIMELINE());
+        ContentsStore.pushAdapter(feedAdapter);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
+
+        feedView = (RecyclerView) view.findViewById(R.id.feed);
+        feedView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
+        feedView.setAdapter(feedAdapter);
 
         return view;
     }

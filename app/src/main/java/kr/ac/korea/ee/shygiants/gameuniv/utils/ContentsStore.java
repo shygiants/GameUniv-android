@@ -37,6 +37,11 @@ public class ContentsStore {
         return (store.momentStore != null)? store.momentStore.get(position) : null;
     }
 
+    public static User getUser() {
+        // TODO: Consider possibility for null value
+        return store.user;
+    }
+
     public static void pushAdapter(RecyclerView.Adapter adapter) {
         store.adapters.add(adapter);
     }

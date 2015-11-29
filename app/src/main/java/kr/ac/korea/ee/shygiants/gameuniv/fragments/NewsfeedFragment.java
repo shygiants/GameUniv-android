@@ -25,7 +25,7 @@ public class NewsfeedFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        feedAdapter = new FeedAdapter();
+        feedAdapter = new FeedAdapter(FeedAdapter.Context.NEWSFEED());
         ContentsStore.pushAdapter(feedAdapter);
     }
 
