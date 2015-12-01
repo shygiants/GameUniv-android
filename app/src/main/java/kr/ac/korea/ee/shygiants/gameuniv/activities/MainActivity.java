@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.TimelineFragment;
@@ -119,8 +121,13 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, newsfeedFragment);
             transaction.commit();
         } else if (id == R.id.nav_timeline) {
-            if (timelineFragment == null)
+            if (timelineFragment == null) {
                 timelineFragment = new TimelineFragment();
+                Bundle arguments = new Bundle();
+                Gson gson = new Gson();
+                arguments.putString(TimelineFragment.TIMELINE_USER, gson.toJson(ContentsStore.getUser()));
+                timelineFragment.setArguments(arguments);
+            }
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, timelineFragment);

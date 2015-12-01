@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
@@ -19,17 +21,21 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
  */
 public class TimelineFragment extends Fragment {
 
+    public static final String TIMELINE_USER = "Timeline user";
+
     private RecyclerView timelineView;
     private FeedAdapter timelineAdapter;
-
-    private User user;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        timelineAdapter = new FeedAdapter(ContentsStore.getUser());
-        ContentsStore.initTimeline(ContentsStore.getUser(), timelineAdapter);
+        Bundle arguments = getArguments();
+        Gson gson = new Gson();
+        User user = gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
+
+        timelineAdapter = new FeedAdapter(user);
+        ContentsStore.initTimeline(user, timelineAdapter);
     }
 
     @Nullable
