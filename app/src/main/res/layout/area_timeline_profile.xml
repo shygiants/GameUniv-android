@@ -31,6 +31,7 @@
             android:textColor="#FFFFFF"
             android:textSize="@dimen/typo_headline"/>
         <Button
+            android:id="@+id/button"
             android:text="프로필 편집"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

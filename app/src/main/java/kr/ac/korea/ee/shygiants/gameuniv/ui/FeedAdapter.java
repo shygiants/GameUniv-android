@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.fragments.TimelineFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
@@ -24,9 +25,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String context;
     private User user;
 
+    private TimelineProfileHolder.OnEditButtonClickListener listener;
+
     public FeedAdapter(User user) {
         context = TIMELINE;
         this.user = user;
+    }
+
+    public FeedAdapter(TimelineProfileHolder.OnEditButtonClickListener listener) {
+        context = TIMELINE;
+        user = ContentsStore.getUser();
+
+        this.listener = listener;
     }
 
     public FeedAdapter() {
@@ -43,6 +53,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (position == 0 && isTimeline()) {
             TimelineProfileHolder timelineProfileHolder = (TimelineProfileHolder) holder;
             timelineProfileHolder.populate(user);
+            if (listener != null) timelineProfileHolder.setOnEditButtonClickListener(listener);
             return;
         }
 

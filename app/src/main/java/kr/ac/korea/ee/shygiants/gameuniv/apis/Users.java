@@ -6,7 +6,10 @@ import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Part;
 import retrofit.http.Path;
 
 /**
@@ -20,4 +23,10 @@ public interface Users {
     @GET("/users/{email}")
     Call<User> getUser(@Path("email") String email, @Header("Authorization") String token);
 
+    @Multipart
+    @PUT("/users/{email}/profilePhotos")
+    Call<String> uploadProfilePhoto(
+            @Path("email") String email,
+            @Part("profile_photo\"; filename=\"profile.png\" ") com.squareup.okhttp.RequestBody photoFile,
+            @Header("Authorization") String token);
 }

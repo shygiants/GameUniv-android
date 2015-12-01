@@ -7,8 +7,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
@@ -17,11 +17,24 @@ import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 /**
  * Created by SHYBook_Air on 15. 11. 29..
  */
-public class TimelineProfileHolder extends RecyclerView.ViewHolder {
+public class TimelineProfileHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    // TODO: Consider additional info
+    public interface OnEditButtonClickListener {
+        void onEditButtonClick();
+    }
+
+    public interface OnFollowButtonClickListener {
+        void onFollowButtonClick();
+    }
 
     View container;
     ImageView userProfile;
     TextView userNameText;
+    Button button;
+
+    OnEditButtonClickListener onEditButtonClickListener;
+    OnFollowButtonClickListener onFollowButtonClickListener;
 
     public TimelineProfileHolder(View view) {
         super(view);
@@ -29,6 +42,8 @@ public class TimelineProfileHolder extends RecyclerView.ViewHolder {
         container = view.findViewById(R.id.profile_area);
         userProfile = (ImageView) view.findViewById(R.id.user_profile);
         userNameText = (TextView) view.findViewById(R.id.user_name_text);
+        button = (Button) view.findViewById(R.id.button);
+        button.setOnClickListener(this);
     }
 
     public void populate(User user) {
@@ -41,5 +56,25 @@ public class TimelineProfileHolder extends RecyclerView.ViewHolder {
         container.setBackground(background);
 
         userNameText.setText(user.getUserName());
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (onEditButtonClickListener != null)
+            onEditButtonClickListener.onEditButtonClick();
+        else if (onFollowButtonClickListener != null)
+            onFollowButtonClickListener.onFollowButtonClick();
+    }
+
+    public void setOnEditButtonClickListener(OnEditButtonClickListener listener) {
+        // TODO: Set button text
+        button.setText("프로필 편집");
+        onEditButtonClickListener = listener;
+    }
+
+    public void setOnFollowButtonClickListener(OnFollowButtonClickListener listener) {
+        // TODO: Set button text
+        button.setText("팔로우");
+        onFollowButtonClickListener = listener;
     }
 }

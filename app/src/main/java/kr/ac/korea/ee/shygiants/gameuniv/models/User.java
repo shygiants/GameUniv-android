@@ -13,6 +13,7 @@ public class User extends Response {
     private String userName;
     private String email;
     private ArrayList<Game> havePlayed;
+    private String profilePhoto;
 
     private String authToken;
 
@@ -34,5 +35,13 @@ public class User extends Response {
 
     public String getAuthToken() {
         return authToken;
+    }
+
+    public String getProfilePhotoPath() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto() {
+
     }
 }
