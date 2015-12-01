@@ -1,12 +1,7 @@
 package kr.ac.korea.ee.shygiants.gameuniv.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,9 +16,8 @@ import com.google.gson.Gson;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
-import kr.ac.korea.ee.shygiants.gameuniv.fragments.TimelineFragment;
+import kr.ac.korea.ee.shygiants.gameuniv.fragments.ProfileFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
-import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
@@ -36,14 +30,17 @@ public class MainActivity extends AppCompatActivity
     private AuthManager authManager;
 
     private NewsfeedFragment newsfeedFragment;
-    private TimelineFragment timelineFragment;
+    private ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        newsfeedFragment = new NewsfeedFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, newsfeedFragment).commit();
+
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -53,15 +50,6 @@ public class MainActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 //        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         userNameText = (TextView) findViewById(R.id.userNameTextView);
         emailText = (TextView) findViewById(R.id.emailTextView);
@@ -74,8 +62,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        newsfeedFragment = new NewsfeedFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, newsfeedFragment).commit();
+
     }
 
     @Override
@@ -121,16 +108,16 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, newsfeedFragment);
             transaction.commit();
         } else if (id == R.id.nav_timeline) {
-            if (timelineFragment == null) {
-                timelineFragment = new TimelineFragment();
+            if (profileFragment == null) {
+                profileFragment = new ProfileFragment();
                 Bundle arguments = new Bundle();
                 Gson gson = new Gson();
-                arguments.putString(TimelineFragment.TIMELINE_USER, gson.toJson(ContentsStore.getUser()));
-                timelineFragment.setArguments(arguments);
+                arguments.putString(ProfileFragment.TIMELINE_USER, gson.toJson(ContentsStore.getUser()));
+                profileFragment.setArguments(arguments);
             }
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, timelineFragment);
+            transaction.replace(R.id.fragment_container, profileFragment);
             transaction.commit();
         } else if (id == R.id.nav_games) {
 
@@ -145,5 +132,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void initNavigationView(Toolbar toolbar) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 }

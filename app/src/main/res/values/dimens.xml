@@ -29,7 +29,7 @@
     <dimen name="typo_title">20sp</dimen>
     <dimen name="typo_subheading">16sp</dimen>
     <dimen name="typo_body">14sp</dimen>
-    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="app_bar_height">200dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
 </resources>
