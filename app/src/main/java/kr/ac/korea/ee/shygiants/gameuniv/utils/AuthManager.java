@@ -119,7 +119,7 @@ public class AuthManager {
                         user = response.body();
                         user.setAuthToken(authToken);
                         if (loadContents)
-                            ContentsStore.init(user);
+                            ContentsStore.initFeed(user);
                         Log.i("AuthManager", "User is initialized");
                         if (userInfoCallback != null)
                             userInfoCallback.onGettingUserInfo(user);

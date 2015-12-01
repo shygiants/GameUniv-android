@@ -8,7 +8,7 @@ import retrofit.Retrofit;
  */
 public class RESTAPI {
 
-    private final static String apiEndPoint = "172.30.82.83";
+    private final static String apiEndPoint = "172.30.20.7";
     // 학회실
 //    private final static String apiEndPoint = "192.168.0.26";
     // 자취방

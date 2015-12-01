@@ -1,19 +1,14 @@
 package kr.ac.korea.ee.shygiants.gameuniv.ui;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
+import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
 /**
@@ -29,6 +24,8 @@ public class MomentHolder extends RecyclerView.ViewHolder {
 
     ImageView gameIcon;
 
+    User user;
+
     public MomentHolder(View view) {
         super(view);
 
@@ -42,7 +39,7 @@ public class MomentHolder extends RecyclerView.ViewHolder {
     }
 
     public void populate(int position) {
-        Moment moment = ContentsStore.getMomentAt(position);
+        Moment moment = ContentsStore.getFeedElementAt(position);
 
 //        Bitmap iconBitmap = ((BitmapDrawable) gameIcon.getDrawable()).getBitmap();
 //        Palette.Builder builder = Palette.from(iconBitmap);
@@ -52,6 +49,16 @@ public class MomentHolder extends RecyclerView.ViewHolder {
 //        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TR_BL, colors);
 //        container.setBackground(background);
 
+        populate(moment);
+    }
+
+    public void populate(User user, int position) {
+        Moment moment = ContentsStore.getTimelineElementAt(user, position);
+
+        populate(moment);
+    }
+
+    private void populate(Moment moment) {
         authorText.setText(moment.getAuthor().getUserName());
         timestampText.setText(moment.getTimeStamp());
         contentText.setText(moment.getContent());

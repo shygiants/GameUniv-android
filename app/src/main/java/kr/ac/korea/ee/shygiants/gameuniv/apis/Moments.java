@@ -12,6 +12,9 @@ import retrofit.http.Path;
  * Created by SHYBook_Air on 15. 11. 19..
  */
 public interface Moments {
-    @GET("/moments/forUser/{userEmail}")
+    @GET("/moments/feed/users/{userEmail}")
     Call<ArrayList<Moment>> getFeed(@Path("userEmail") String email, @Header("Authorization") String authToken);
+
+    @GET("/moments/timeline/users/{userEmail}")
+    Call<ArrayList<Moment>> getTimeline(@Path("userEmail") String email, @Header("Authorization") String authToken);
 }

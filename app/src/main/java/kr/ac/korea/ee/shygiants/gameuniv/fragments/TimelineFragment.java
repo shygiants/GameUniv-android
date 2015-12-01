@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
@@ -18,15 +19,17 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
  */
 public class TimelineFragment extends Fragment {
 
-    private RecyclerView feedView;
-    private FeedAdapter feedAdapter;
+    private RecyclerView timelineView;
+    private FeedAdapter timelineAdapter;
+
+    private User user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        feedAdapter = new FeedAdapter(FeedAdapter.Context.TIMELINE());
-        ContentsStore.pushAdapter(feedAdapter);
+        timelineAdapter = new FeedAdapter(ContentsStore.getUser());
+        ContentsStore.initTimeline(ContentsStore.getUser(), timelineAdapter);
     }
 
     @Nullable
@@ -34,9 +37,9 @@ public class TimelineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
 
-        feedView = (RecyclerView) view.findViewById(R.id.feed);
-        feedView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
-        feedView.setAdapter(feedAdapter);
+        timelineView = (RecyclerView) view.findViewById(R.id.feed);
+        timelineView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
+        timelineView.setAdapter(timelineAdapter);
 
         return view;
     }

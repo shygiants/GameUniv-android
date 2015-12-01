@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
+import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
 /**
@@ -15,68 +16,56 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static class Context {
-        private static final String NEWSFEED = "NEWSFEED";
-        private static final String TIMELINE = "TIMELINE";
-
-        private String context;
-
-        public static Context NEWSFEED() {
-            Context newsfeed = new Context();
-            newsfeed.context = NEWSFEED;
-            return newsfeed;
-        }
-
-        public static Context TIMELINE() {
-            Context timeline = new Context();
-            timeline.context = TIMELINE;
-            return timeline;
-        }
-
-        public boolean isTimeline() {
-            return context.equals(TIMELINE);
-        }
-    }
+    private static final String NEWSFEED = "NEWSFEED";
+    private static final String TIMELINE = "TIMELINE";
 
     private static final int HEADER = -1;
 
-    private Context context;
+    private String context;
+    private User user;
 
-    public FeedAdapter(FeedAdapter.Context context) {
-        this.context = context;
+    public FeedAdapter(User user) {
+        context = TIMELINE;
+        this.user = user;
+    }
+
+    public FeedAdapter() {
+        context = NEWSFEED;
+    }
+
+    private boolean isTimeline() {
+        return context.equals(TIMELINE);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Populate view
-        if (context.isTimeline()) {
-            if (position == 0) {
-                TimelineProfileHolder timelineProfileHolder = (TimelineProfileHolder) holder;
-                timelineProfileHolder.populate(ContentsStore.getUser());
-                return;
-            }
-            position--;
+        if (position == 0 && isTimeline()) {
+            TimelineProfileHolder timelineProfileHolder = (TimelineProfileHolder) holder;
+            timelineProfileHolder.populate(user);
+            return;
         }
 
         MomentHolder momentHolder = (MomentHolder) holder;
-        momentHolder.populate(position);
+        if (isTimeline()) momentHolder.populate(user, --position);
+        else momentHolder.populate(position);
     }
 
     @Override
     public int getItemCount() {
-        int itemCount = ContentsStore.getMomentsCount();
-        if (context.isTimeline()) ++itemCount;
-        return itemCount;
+        return (isTimeline())?
+            ContentsStore.getTimelineElementsCount(user) + 1 : ContentsStore.getFeedElementsCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (context.isTimeline()) {
+
+        if (isTimeline()) {
             if (position == 0) return HEADER;
-            --position;
+            return ContentsStore.getTimelineElementAt(user, --position).getViewType();
         }
 
-        return ContentsStore.getMomentAt(position).getViewType();
+        return ContentsStore.getFeedElementAt(position).getViewType();
     }
 
     @Override
