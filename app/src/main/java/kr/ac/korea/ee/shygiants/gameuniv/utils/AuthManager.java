@@ -38,9 +38,6 @@ public class AuthManager {
     private String ACCOUNT_TYPE;
     private String FULL_ACCESS;
 
-    // Retrofit API
-    private Users usersAPI = RESTAPI.create(Users.class);
-
     // Context
     private Activity context;
     private boolean loadContents;
@@ -103,7 +100,7 @@ public class AuthManager {
     }
 
     private void getUserInfo() {
-        usersAPI.getUser(email, authToken).enqueue(new Callback<User>() {
+        RESTAPI.Users.getUser(email, authToken).enqueue(new Callback<User>() {
             @Override
             public void onResponse(retrofit.Response<User> response, Retrofit retrofit) {
                 // HERE IS MAIN THREAD!
@@ -149,8 +146,7 @@ public class AuthManager {
     public void getAuthCode(String gameId, final AuthCodeCallback callback) {
         if (email == null || authToken == null) callback.onGettingAuthCode(null);
 
-        AuthCodes authCodesAPI = RESTAPI.create(AuthCodes.class);
-        authCodesAPI.getAuthCode(email, authToken, gameId, "code")
+        RESTAPI.AuthCodes.getAuthCode(email, authToken, gameId, "code")
                 .enqueue(new Callback<Response>() {
                     @Override
                     public void onResponse(retrofit.Response<Response> response, Retrofit retrofit) {

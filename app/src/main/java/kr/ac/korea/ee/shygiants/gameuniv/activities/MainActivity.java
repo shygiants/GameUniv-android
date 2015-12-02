@@ -1,5 +1,6 @@
 package kr.ac.korea.ee.shygiants.gameuniv.activities;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -10,20 +11,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.ProfileFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private View profileArea;
+    private CircleImageView profilePhoto;
     private TextView userNameText;
     private TextView emailText;
 
@@ -51,18 +57,26 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
+        profileArea = findViewById(R.id.profile_area);
+        profilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
         userNameText = (TextView) findViewById(R.id.userNameTextView);
         emailText = (TextView) findViewById(R.id.emailTextView);
 
+        ImageHandler.init(this);
         authManager = AuthManager.initWithCustomCallback(this, new AuthManager.UserInfoCallback() {
             @Override
             public void onGettingUserInfo(User user) {
+                user.getProfilePhoto(profilePhoto);
+                user.getProfilePhotoGradient(new User.OnCreateGradientListener() {
+                    @Override
+                    public void onCreateGradient(GradientDrawable gradient) {
+                        profileArea.setBackground(gradient);
+                    }
+                });
                 userNameText.setText(user.getUserName());
                 emailText.setText(user.getEmail());
             }
         });
-
-
     }
 
     @Override
@@ -111,8 +125,7 @@ public class MainActivity extends AppCompatActivity
             if (profileFragment == null) {
                 profileFragment = new ProfileFragment();
                 Bundle arguments = new Bundle();
-                Gson gson = new Gson();
-                arguments.putString(ProfileFragment.TIMELINE_USER, gson.toJson(ContentsStore.getUser()));
+                arguments.putBoolean(ProfileFragment.IS_OWNER, true);
                 profileFragment.setArguments(arguments);
             }
 

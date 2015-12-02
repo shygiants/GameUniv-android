@@ -1,5 +1,10 @@
 package kr.ac.korea.ee.shygiants.gameuniv.utils;
 
+import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthCodes;
+import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthTokens;
+import kr.ac.korea.ee.shygiants.gameuniv.apis.Games;
+import kr.ac.korea.ee.shygiants.gameuniv.apis.Moments;
+import kr.ac.korea.ee.shygiants.gameuniv.apis.Users;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
@@ -17,15 +22,25 @@ public class RESTAPI {
 
     private static RESTAPI ourInstance = new RESTAPI();
 
-    public static <T> T create(final Class<T> service) {
+    public static Users Users = create(Users.class);
+    public static AuthCodes AuthCodes = create(AuthCodes.class);
+    public static Moments Moments = create(Moments.class);
+    public static AuthTokens AuthTokens = create(AuthTokens.class);
+    public static Games Games = create(Games.class);
+
+    private static <T> T create(final Class<T> service) {
         return ourInstance.retrofit.create(service);
+    }
+
+    public static String getURL() {
+        return "http://" + apiEndPoint + ":" + port;
     }
 
     private Retrofit retrofit;
 
     private RESTAPI() {
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + apiEndPoint + ":" + port)
+                .baseUrl(getURL())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         retrofit.client().setFollowRedirects(false);

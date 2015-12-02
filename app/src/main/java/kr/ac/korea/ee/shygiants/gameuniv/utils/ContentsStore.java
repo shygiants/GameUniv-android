@@ -20,6 +20,7 @@ public class ContentsStore {
     private static class Timeline {
         private User user;
         private ArrayList<Moment> store;
+        // TODO: Consider duplication
         private ArrayList<RecyclerView.Adapter> adapters;
 
         public Timeline(User user, RecyclerView.Adapter adapter) {
@@ -42,7 +43,7 @@ public class ContentsStore {
         }
 
         private void getTimeline() {
-            momentsAPI.getTimeline(user.getEmail(), singleton.user.getAuthToken())
+            RESTAPI.Moments.getTimeline(user.getEmail(), singleton.user.getAuthToken())
                     .enqueue(new Callback<ArrayList<Moment>>() {
                         @Override
                         public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {
@@ -76,7 +77,6 @@ public class ContentsStore {
 
     // Singleton object
     private static ContentsStore singleton = new ContentsStore();
-    private static Moments momentsAPI = RESTAPI.create(Moments.class);
 
     // For newsfeed
     private User user;
@@ -109,7 +109,7 @@ public class ContentsStore {
     }
 
     private void getFeed() {
-        momentsAPI.getFeed(user.getEmail(), user.getAuthToken())
+        RESTAPI.Moments.getFeed(user.getEmail(), user.getAuthToken())
         .enqueue(new Callback<ArrayList<Moment>>() {
             @Override
             public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {

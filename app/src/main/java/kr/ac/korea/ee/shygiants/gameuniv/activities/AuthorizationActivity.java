@@ -27,8 +27,6 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     // Outgoing intent keys
     public static final String AUTH_CODE = "AUTH_CODE";
 
-    private Games gamesAPI = RESTAPI.create(Games.class);
-
     private Game game;
 
     private String gameId;
@@ -53,7 +51,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
             informingText = (TextView) findViewById(R.id.informingText);
 
             authManager = AuthManager.initWithCustomCallback(this, this);
-            gamesAPI.getGame(gameId).enqueue(new Callback<Game>() {
+            RESTAPI.Games.getGame(gameId).enqueue(new Callback<Game>() {
                 @Override
                 public void onResponse(Response<Game> response, Retrofit retrofit) {
                     game = response.body();

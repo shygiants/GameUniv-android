@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">GameUniv</string>
 
+    <string name="activity_edit_profile">프로필 편집</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">이메일</string>
     <string name="prompt_password">패스워드</string>
@@ -35,6 +37,9 @@
     <string name="moment_score">최고 점수</string>
 
     <string name="profile_tab_timeline">타임라인</string>
+
+    <string name="follow_button">팔로우</string>
+    <string name="edit_profile_button">프로필 편집</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_editing">Edit Profile</string>

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.TimelineFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
 /**
  * Created by SHYBook_Air on 15. 12. 2..
@@ -30,8 +31,11 @@ public class TimelineAdapter extends FragmentPagerAdapter {
                 TimelineFragment timelineFragment = new TimelineFragment();
 
                 Bundle arguments = new Bundle();
+
+                arguments.putBoolean(TimelineFragment.IS_OWNER, user.equals(ContentsStore.getUser()));
                 Gson gson = new Gson();
                 arguments.putString(TimelineFragment.TIMELINE_USER, gson.toJson(user));
+
                 timelineFragment.setArguments(arguments);
                 return timelineFragment;
             default:

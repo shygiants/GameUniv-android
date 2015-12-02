@@ -33,17 +33,16 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile"
+                android:id="@+id/profile_photo"
                 android:layout_width="@dimen/card_profile_image_size"
                 android:layout_height="@dimen/card_profile_image_size"
                 android:layout_marginRight="@dimen/card_profile_image_margin"
-                android:src="@drawable/dummy_profile"
                 app:civ_border_width="0dp" />
             <TextView
                 android:textSize="14sp"
                 android:textColor="@color/colorBlack87"
                 android:id="@+id/author"
-                android:layout_toRightOf="@id/profile"
+                android:layout_toRightOf="@id/profile_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
@@ -51,7 +50,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/colorBlack54"
                 android:layout_below="@id/author"
-                android:layout_toRightOf="@id/profile"
+                android:layout_toRightOf="@id/profile_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
@@ -66,6 +65,7 @@
                 android:tint="@color/colorBlack54"
                 android:tintMode="multiply"
                 android:src="@drawable/ic_favorite"
+                android:layout_margin="@dimen/card_icon_margin"
                 android:layout_width="@dimen/icon_size"
                 android:layout_height="@dimen/icon_size"
                 android:background="?attr/selectableItemBackgroundBorderless"/>

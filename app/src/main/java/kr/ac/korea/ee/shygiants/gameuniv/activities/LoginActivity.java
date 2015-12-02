@@ -39,9 +39,6 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    // APIs
-    private AuthTokens authTokensAPI = RESTAPI.create(AuthTokens.class);
-
     // Intent arg keys
     public static final String ACCOUNT_TYPE = "ACCOUNT_TYPE";
     public static final String AUTH_TYPE = "AUTH_TYPE";
@@ -139,7 +136,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            authTokensAPI.getAuthToken(email, RequestBody.create(password))
+            RESTAPI.AuthTokens.getAuthToken(email, RequestBody.create(password))
             .enqueue(new Callback<AuthToken>() {
                 @Override
                 public void onResponse(retrofit.Response<AuthToken> response, Retrofit retrofit) {

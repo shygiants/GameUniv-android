@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
@@ -22,15 +23,15 @@ public class MomentHolder extends RecyclerView.ViewHolder {
     TextView timestampText;
     TextView contentText;
 
+    CircleImageView profilePhoto;
     ImageView gameIcon;
-
-    User user;
 
     public MomentHolder(View view) {
         super(view);
 
         cardView = (CardView) view;
 
+        profilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
         authorText = (TextView) view.findViewById(R.id.author);
         timestampText = (TextView) view.findViewById(R.id.created_at);
         contentText = (TextView) view.findViewById(R.id.content);
@@ -40,21 +41,13 @@ public class MomentHolder extends RecyclerView.ViewHolder {
 
     public void populate(int position) {
         Moment moment = ContentsStore.getFeedElementAt(position);
-
-//        Bitmap iconBitmap = ((BitmapDrawable) gameIcon.getDrawable()).getBitmap();
-//        Palette.Builder builder = Palette.from(iconBitmap);
-//        // Synchronously generate
-//        Palette palette = builder.generate();
-//        int[] colors = {palette.getLightVibrantColor(Color.WHITE), Color.WHITE };
-//        GradientDrawable background = new GradientDrawable(GradientDrawable.Orientation.TR_BL, colors);
-//        container.setBackground(background);
-
+        moment.getAuthor().getProfilePhoto(profilePhoto);
         populate(moment);
     }
 
     public void populate(User user, int position) {
         Moment moment = ContentsStore.getTimelineElementAt(user, position);
-
+        user.getProfilePhoto(profilePhoto);
         populate(moment);
     }
 

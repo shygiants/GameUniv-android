@@ -23,6 +23,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 public class TimelineFragment extends Fragment {
 
     public static final String TIMELINE_USER = "Timeline user";
+    public static final String IS_OWNER = "Whether it's owner";
 
     private RecyclerView timelineView;
     private FeedAdapter timelineAdapter;
@@ -33,7 +34,8 @@ public class TimelineFragment extends Fragment {
 
         Bundle arguments = getArguments();
         Gson gson = new Gson();
-        User user = gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
+        User user = (arguments.getBoolean(IS_OWNER))?
+                ContentsStore.getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
 
         timelineAdapter = new FeedAdapter(user);
         ContentsStore.initTimeline(user, timelineAdapter);

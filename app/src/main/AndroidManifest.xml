@@ -19,7 +19,7 @@
         <!-- Activities -->
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -39,6 +39,9 @@
                 <data android:scheme="@string/auth_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:label="@string/activity_edit_profile"/>
 
         <!-- Services -->
         <service android:name=".utils.GameUnivAuthenticatorService">
@@ -51,10 +54,6 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <activity
-            android:name=".activities.EditingActivity"
-            android:label="@string/title_activity_editing"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
