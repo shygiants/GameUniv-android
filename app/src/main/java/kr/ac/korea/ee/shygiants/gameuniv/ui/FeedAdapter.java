@@ -22,14 +22,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private String context;
     private User user;
+    private MomentHolder.OnMomentClickListener listener;
 
-    public FeedAdapter(User user) {
+    public FeedAdapter(User user, MomentHolder.OnMomentClickListener listener) {
         context = TIMELINE;
         this.user = user;
+        this.listener = listener;
     }
 
-    public FeedAdapter() {
+    public FeedAdapter(MomentHolder.OnMomentClickListener listener) {
         context = NEWSFEED;
+        this.listener = listener;
     }
 
     private boolean isTimeline() {
@@ -80,6 +83,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         container.addView(inflater.inflate(resourceId, null, false), 1);
 
-        return new MomentHolder(momentView);
+        return new MomentHolder(momentView, listener);
     }
 }

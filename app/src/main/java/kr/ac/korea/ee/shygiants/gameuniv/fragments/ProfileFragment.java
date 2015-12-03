@@ -112,9 +112,8 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
         if (user.equals(ContentsStore.getUser())) {
             // Edit profile
             startActivity(new Intent(getActivity(), EditProfileActivity.class));
-
         } else {
-            // Follow user
+            // TODO: Follow user
         }
     }
 }

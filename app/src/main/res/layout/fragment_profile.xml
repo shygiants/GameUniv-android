@@ -5,28 +5,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="kr.ac.korea.ee.shygiants.gameuniv.activities.MainActivity">
 
 <android.support.design.widget.AppBarLayout
     android:id="@+id/app_bar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/app_bar_height"
-    android:fitsSystemWindows="true"
+    android:layout_height="@dimen/profile_app_bar_height"
     android:theme="@style/AppTheme.AppBarOverlay">
 
     <android.support.design.widget.CollapsingToolbarLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         app:contentScrim="?attr/colorPrimary"
         app:expandedTitleTextAppearance="@android:color/transparent"
-        app:layout_scrollFlags="scroll|enterAlways">
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <RelativeLayout
             android:id="@+id/profile_area"
-            android:fitsSystemWindows="true"
             app:layout_collapseMode="pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

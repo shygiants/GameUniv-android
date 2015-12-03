@@ -14,15 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.ProfileFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
-import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
 
 public class MainActivity extends AppCompatActivity
@@ -107,6 +104,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == android.R.id.home) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity
 
     public void initNavigationView(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -156,5 +158,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void disableNavigationView() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 }
