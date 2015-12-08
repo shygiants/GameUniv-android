@@ -32,7 +32,6 @@
                 android:paddingBottom="20dp">
                 <ImageView
                     android:id="@+id/game_icon"
-                    android:src="@drawable/ic_game"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_alignParentTop="true"
@@ -59,7 +58,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/feed"
+        android:id="@+id/timeline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:showIn="@layout/fragment_game"

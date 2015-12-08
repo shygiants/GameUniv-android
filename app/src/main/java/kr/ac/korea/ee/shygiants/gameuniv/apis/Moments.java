@@ -16,5 +16,8 @@ public interface Moments {
     Call<ArrayList<Moment>> getFeed(@Path("userEmail") String email, @Header("Authorization") String authToken);
 
     @GET("/moments/timeline/users/{userEmail}")
-    Call<ArrayList<Moment>> getTimeline(@Path("userEmail") String email, @Header("Authorization") String authToken);
+    Call<ArrayList<Moment>> getTimelineForUser(@Path("userEmail") String email, @Header("Authorization") String authToken);
+
+    @GET("/moments/timeline/games/{gameId}")
+    Call<ArrayList<Moment>> getTimelineForGame(@Path("gameId") String gameId, @Header("Authorization") String authToken);
 }

@@ -5,8 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import kr.ac.korea.ee.shygiants.gameuniv.apis.Moments;
+import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
+import kr.ac.korea.ee.shygiants.gameuniv.models.TimelineOwner;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import retrofit.Callback;
 import retrofit.Response;
@@ -18,16 +19,17 @@ import retrofit.Retrofit;
 public class ContentsStore {
 
     private static class Timeline {
-        private User user;
+        private String key;
         private ArrayList<Moment> store;
         // TODO: Consider duplication
         private ArrayList<RecyclerView.Adapter> adapters;
 
-        public Timeline(User user, RecyclerView.Adapter adapter) {
-            this.user = user;
+        public Timeline(TimelineOwner owner, RecyclerView.Adapter adapter) {
+            key = owner.getKey();
             adapters = new ArrayList<>();
             pushAdapter(adapter);
-            getTimeline();
+            if (owner instanceof User) getTimelineForUser();
+            else getTimelineForGame();
         }
 
         public void pushAdapter(RecyclerView.Adapter adapter) {
@@ -42,8 +44,40 @@ public class ContentsStore {
             return (store != null)? store.get(position) : null;
         }
 
-        private void getTimeline() {
-            RESTAPI.Moments.getTimeline(user.getEmail(), singleton.user.getAuthToken())
+        private void getTimelineForUser() {
+            RESTAPI.Moments.getTimelineForUser(key, singleton.user.getAuthToken())
+                    .enqueue(new Callback<ArrayList<Moment>>() {
+                        @Override
+                        public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {
+                            // HERE IS MAIN THREAD!
+                            switch (response.code()) {
+                                case 401: // Unauthorized
+                                    break;
+                                case 404: // Not Found
+                                    break;
+                                case 500: // Server Error
+                                    break;
+                                case 200:
+                                    // TODO: Notify to all adapters
+                                    store = response.body();
+                                    for (RecyclerView.Adapter adapter : adapters)
+                                        adapter.notifyDataSetChanged();
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            // HERE IS MAIN THREAD!
+                            // TODO: Something wrong on network
+                            // TODO: Ask user to retry
+                            t.printStackTrace();
+                        }
+                    });
+        }
+
+        private void getTimelineForGame() {
+            RESTAPI.Moments.getTimelineForGame(key, singleton.user.getAuthToken())
                     .enqueue(new Callback<ArrayList<Moment>>() {
                         @Override
                         public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {
@@ -140,25 +174,23 @@ public class ContentsStore {
         });
     }
 
-    public static void initTimeline(User user, RecyclerView.Adapter adapter) {
-        String userEmail = user.getEmail();
-        if (singleton.timelineStore.containsKey(userEmail)) {
-            singleton.timelineStore.get(userEmail).pushAdapter(adapter);
-            return;
-        }
+    public static void initTimeline(TimelineOwner owner, RecyclerView.Adapter adapter) {
+        String key = owner.getKey();
+        if (singleton.timelineStore.containsKey(key))
+            singleton.timelineStore.get(key).pushAdapter(adapter);
 
-        singleton.timelineStore.put(user.getEmail(), new Timeline(user, adapter));
+        singleton.timelineStore.put(key, new Timeline(owner, adapter));
     }
 
-    public static int getTimelineElementsCount(User user) {
-        String userEmail = user.getEmail();
-        return (singleton.timelineStore.containsKey(userEmail))?
-                singleton.timelineStore.get(userEmail).getTimelineElementsCount() : 0;
+    public static int getTimelineElementsCount(TimelineOwner owner) {
+        String key = owner.getKey();
+        return (singleton.timelineStore.containsKey(key))?
+                singleton.timelineStore.get(key).getTimelineElementsCount() : 0;
     }
 
-    public static Moment getTimelineElementAt(User user, int position) {
-        String userEmail = user.getEmail();
-        return (singleton.timelineStore.containsKey(userEmail))?
-                singleton.timelineStore.get(userEmail).getTimelineElementAt(position) : null;
+    public static Moment getTimelineElementAt(TimelineOwner owner, int position) {
+        String key = owner.getKey();
+        return (singleton.timelineStore.containsKey(key))?
+                singleton.timelineStore.get(key).getTimelineElementAt(position) : null;
     }
 }

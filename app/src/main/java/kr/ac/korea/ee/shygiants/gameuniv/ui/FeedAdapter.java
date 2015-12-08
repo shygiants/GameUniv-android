@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
+import kr.ac.korea.ee.shygiants.gameuniv.models.TimelineOwner;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
@@ -21,12 +23,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TIMELINE = "TIMELINE";
 
     private String context;
-    private User user;
+    private TimelineOwner owner;
     private MomentHolder.OnMomentClickListener listener;
 
-    public FeedAdapter(User user, MomentHolder.OnMomentClickListener listener) {
+    public FeedAdapter(TimelineOwner owner, MomentHolder.OnMomentClickListener listener) {
         context = TIMELINE;
-        this.user = user;
+        this.owner = owner;
         this.listener = listener;
     }
 
@@ -43,20 +45,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Populate view
         MomentHolder momentHolder = (MomentHolder) holder;
-        if (isTimeline()) momentHolder.populate(user, position);
+        if (isTimeline()) momentHolder.populate(owner, position);
         else momentHolder.populate(position);
     }
 
     @Override
     public int getItemCount() {
         return (isTimeline())?
-                ContentsStore.getTimelineElementsCount(user) : ContentsStore.getFeedElementsCount();
+                ContentsStore.getTimelineElementsCount(owner) : ContentsStore.getFeedElementsCount();
     }
 
     @Override
     public int getItemViewType(int position) {
         return (isTimeline())?
-                ContentsStore.getTimelineElementAt(user, position).getViewType() :
+                ContentsStore.getTimelineElementAt(owner, position).getViewType() :
                 ContentsStore.getFeedElementAt(position).getViewType();
     }
 

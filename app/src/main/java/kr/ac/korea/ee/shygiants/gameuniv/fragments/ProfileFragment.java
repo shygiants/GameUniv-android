@@ -24,6 +24,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.activities.MainActivity;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.TimelineAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
 
 /**
  * Created by SHYBook_Air on 15. 11. 27..
@@ -32,6 +33,8 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
 
     public static final String TIMELINE_USER = "Timeline user";
     public static final String IS_OWNER = "Whether it's owner";
+
+    private boolean isOwner;
 
     private User user;
 
@@ -45,8 +48,11 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
 
         Bundle arguments = getArguments();
         Gson gson = new Gson();
-        user = (arguments.getBoolean(IS_OWNER))?
+        user = (isOwner = arguments.getBoolean(IS_OWNER))?
                 ContentsStore.getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
+
+        MainActivity activity = (MainActivity) getActivity();
+        activity.disableNavigationView();
     }
 
     @Nullable
@@ -57,7 +63,7 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         MainActivity activity = (MainActivity)getActivity();
         activity.setSupportActionBar(toolbar);
-        activity.initNavigationView(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle(user.getUserName());
@@ -73,7 +79,7 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
         TextView userNameText = (TextView) view.findViewById(R.id.user_name_text);
         userNameText.setText(user.getUserName());
 
-        int resId = (user.equals(ContentsStore.getUser()))?
+        int resId = (isOwner)?
                 R.string.edit_profile_button : R.string.follow_button;
         Button button = (Button) view.findViewById(R.id.button);
         button.setText(activity.getString(resId));
@@ -82,7 +88,7 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
         final View profileArea = view.findViewById(R.id.profile_area);
         ImageView userProfile = (ImageView) view.findViewById(R.id.user_profile);
         user.getProfilePhoto(userProfile);
-        user.getProfilePhotoGradient(new User.OnCreateGradientListener() {
+        user.getProfilePhotoGradient(new OnCreateGradientListener() {
             @Override
             public void onCreateGradient(GradientDrawable gradient) {
                 profileArea.setBackground(gradient);
@@ -109,7 +115,7 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
 
     @Override
     public void onClick(View v) {
-        if (user.equals(ContentsStore.getUser())) {
+        if (isOwner) {
             // Edit profile
             startActivity(new Intent(getActivity(), EditProfileActivity.class));
         } else {

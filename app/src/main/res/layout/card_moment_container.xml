@@ -27,7 +27,6 @@
                 android:id="@+id/game_icon"
                 android:layout_width="@dimen/card_game_icon_size"
                 android:layout_height="@dimen/card_game_icon_size"
-                android:src="@drawable/ic_game"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true" />
 

@@ -20,7 +20,10 @@ import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.ProfileFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.TransactionManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +58,12 @@ public class MainActivity extends AppCompatActivity
 //        });
 
         profileArea = findViewById(R.id.profile_area);
+        profileArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransactionManager.commitTransaction(ContentsStore.getUser(), getSupportFragmentManager());
+            }
+        });
         profilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
         userNameText = (TextView) findViewById(R.id.userNameTextView);
         emailText = (TextView) findViewById(R.id.emailTextView);
@@ -64,7 +73,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onGettingUserInfo(User user) {
                 user.getProfilePhoto(profilePhoto);
-                user.getProfilePhotoGradient(new User.OnCreateGradientListener() {
+                user.getProfilePhotoGradient(new OnCreateGradientListener() {
                     @Override
                     public void onCreateGradient(GradientDrawable gradient) {
                         profileArea.setBackground(gradient);
@@ -122,24 +131,9 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, newsfeedFragment);
             transaction.commit();
-        } else if (id == R.id.nav_timeline) {
-            if (profileFragment == null) {
-                profileFragment = new ProfileFragment();
-                Bundle arguments = new Bundle();
-                arguments.putBoolean(ProfileFragment.IS_OWNER, true);
-                profileFragment.setArguments(arguments);
-            }
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, profileFragment);
-            transaction.commit();
         } else if (id == R.id.nav_games) {
 
         } else if (id == R.id.nav_achievement) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 

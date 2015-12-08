@@ -1,12 +1,10 @@
 package kr.ac.korea.ee.shygiants.gameuniv.models;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.graphics.Palette;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.okhttp.*;
@@ -18,25 +16,20 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.util.ArrayList;
 
-import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
 import retrofit.Retrofit;
 
 /**
  * Created by SHYBook_Air on 15. 10. 5..
  */
-public class User extends Response implements Target {
-
-    public interface OnCreateGradientListener {
-        void onCreateGradient(GradientDrawable gradient);
-    }
+public class User extends Response implements Target, TimelineOwner {
 
     private String _id;
     private String userName;
     private String email;
     private ArrayList<Game> havePlayed;
-    private String profilePhoto;
 
     private String authToken;
     private OnCreateGradientListener listener;
@@ -80,7 +73,6 @@ public class User extends Response implements Target {
                                 break;
                             case 200:
                                 // TODO: Notify to all users
-                                profilePhoto = response.body();
                                 ImageHandler.load(profileFile).into(profile);
                         }
                     }
@@ -132,5 +124,10 @@ public class User extends Response implements Target {
         int[] colors = { palette.getDarkMutedColor(Color.WHITE), palette.getLightMutedColor(Color.WHITE) };
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         listener.onCreateGradient(gradientDrawable);
+    }
+
+    @Override
+    public String getKey() {
+        return email;
     }
 }

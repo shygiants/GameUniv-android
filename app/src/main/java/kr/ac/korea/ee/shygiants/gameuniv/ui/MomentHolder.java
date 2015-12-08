@@ -10,6 +10,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
+import kr.ac.korea.ee.shygiants.gameuniv.models.TimelineOwner;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
@@ -42,6 +43,7 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
         cardView = (CardView) view;
 
         profilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
+        profilePhoto.setOnClickListener(this);
         authorText = (TextView) view.findViewById(R.id.author);
         authorText.setOnClickListener(this);
         timestampText = (TextView) view.findViewById(R.id.created_at);
@@ -53,18 +55,18 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
 
     public void populate(int position) {
         Moment moment = ContentsStore.getFeedElementAt(position);
-        moment.getAuthor().getProfilePhoto(profilePhoto);
         populate(moment);
     }
 
-    public void populate(User user, int position) {
-        Moment moment = ContentsStore.getTimelineElementAt(user, position);
-        user.getProfilePhoto(profilePhoto);
+    public void populate(TimelineOwner owner, int position) {
+        Moment moment = ContentsStore.getTimelineElementAt(owner, position);
         populate(moment);
     }
 
     private void populate(Moment moment) {
         this.moment = moment;
+        moment.getAuthor().getProfilePhoto(profilePhoto);
+        moment.getGame().getGameIcon(gameIcon);
         authorText.setText(moment.getAuthor().getUserName());
         timestampText.setText(moment.getTimeStamp());
         contentText.setText(moment.getContent());
@@ -74,6 +76,7 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.author:
+            case R.id.profile_photo:
                 listener.onAuthorClick(moment.getAuthor());
                 break;
             case R.id.game_icon:

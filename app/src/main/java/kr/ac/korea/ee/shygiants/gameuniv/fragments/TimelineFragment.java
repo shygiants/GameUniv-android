@@ -19,6 +19,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.MomentHolder;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.TransactionManager;
 
 /**
  * Created by SHYBook_Air on 15. 12. 2..
@@ -58,21 +59,11 @@ public class TimelineFragment extends Fragment implements MomentHolder.OnMomentC
 
     @Override
     public void onAuthorClick(User user) {
-// TODO: Handle click event
+        // DO NOTHING
     }
 
     @Override
     public void onGameClick(Game game) {
-        Bundle arguments = new Bundle();
-        Gson gson = new Gson();
-        arguments.putString(GameFragment.GAME, gson.toJson(game));
-        GameFragment gameFragment = new GameFragment();
-        gameFragment.setArguments(arguments);
-
-        FragmentTransaction transaction = getParentFragment().getFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, gameFragment);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        TransactionManager.commitTransaction(game, getParentFragment().getFragmentManager());
     }
 }

@@ -24,6 +24,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthTokens;
 import kr.ac.korea.ee.shygiants.gameuniv.models.AuthToken;
 import kr.ac.korea.ee.shygiants.gameuniv.models.RequestBody;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.Regex;
 import retrofit.Callback;
 import retrofit.Retrofit;
 
@@ -173,7 +174,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return Regex.isEmail(email);
     }
 
     private boolean isPasswordValid(String password) {

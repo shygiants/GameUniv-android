@@ -1,9 +1,12 @@
 package kr.ac.korea.ee.shygiants.gameuniv.fragments;
 
+import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -22,6 +26,8 @@ import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.FeedAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.ui.MomentHolder;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.TransactionManager;
 
 /**
  * Created by SHYBook_Air on 15. 12. 3..
@@ -30,8 +36,8 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
 
     public static final String GAME = "Game";
 
-    private RecyclerView feedView;
-    private FeedAdapter feedAdapter;
+    private RecyclerView timelineView;
+    private FeedAdapter timelineAdapter;
 
     private Game game;
 
@@ -46,8 +52,8 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
         MainActivity activity = (MainActivity) getActivity();
         activity.disableNavigationView();
 
-        feedAdapter = new FeedAdapter(this);
-        ContentsStore.pushAdapter(feedAdapter);
+        timelineAdapter = new FeedAdapter(game, this);
+        ContentsStore.initTimeline(game, timelineAdapter);
     }
 
     @Nullable
@@ -64,23 +70,33 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
         CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle(game.getGameName());
 
+        final View gameArea = view.findViewById(R.id.game_area);
+        ImageView gameIcon = (ImageView) view.findViewById(R.id.game_icon);
+        game.getGameIcon(gameIcon);
+        game.getGameIconGradient(new OnCreateGradientListener() {
+            @Override
+            public void onCreateGradient(GradientDrawable gradient) {
+                gameArea.setBackground(gradient);
+            }
+        });
+
         TextView gameNameText = (TextView) view.findViewById(R.id.game_name_text);
         gameNameText.setText(game.getGameName());
 
-        feedView = (RecyclerView) view.findViewById(R.id.feed);
-        feedView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
-        feedView.setAdapter(feedAdapter);
+        timelineView = (RecyclerView) view.findViewById(R.id.timeline);
+        timelineView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
+        timelineView.setAdapter(timelineAdapter);
 
         return view;
     }
 
     @Override
     public void onAuthorClick(User user) {
-        // TODO: Handle click event
+        TransactionManager.commitTransaction(user, getFragmentManager());
     }
 
     @Override
     public void onGameClick(Game game) {
-        // TODO: Handle click event
+        // DO NOTHING
     }
 }
