@@ -91,12 +91,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         int resourceId;
         switch (viewType) {
             // TODO: Handle achievement moments
-            case Moment.ACHIEVEMENT:
             case Moment.TEXT:
                 resourceId = R.layout.card_moment_text;
                 break;
             case Moment.SCORE:
                 resourceId = R.layout.card_moment_score;
+                break;
+            case Moment.ACHIEVEMENT:
+                resourceId = R.layout.card_moment_achievement;
                 break;
             default:
                 resourceId = R.layout.card_moment_text;
@@ -104,6 +106,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         }
         container.addView(inflater.inflate(resourceId, null, false), 1);
 
-        return new MomentHolder(momentView, listener);
+        return new MomentHolder(momentView, viewType, listener);
     }
 }

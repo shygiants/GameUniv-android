@@ -14,4 +14,12 @@ public class Achievement extends Response {
         return title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPoint() {
+        return point + "pt";
+    }
+
 }

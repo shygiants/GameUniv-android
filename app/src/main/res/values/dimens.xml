@@ -23,6 +23,8 @@
     <dimen name="card_action_area_padding">8dp</dimen>
     <dimen name="card_icon_margin">8dp</dimen>
 
+    <dimen name="card_achievement_icon_margin">16dp</dimen>
+
     <dimen name="icon_size">24dp</dimen>
 
     <!--Typography-->

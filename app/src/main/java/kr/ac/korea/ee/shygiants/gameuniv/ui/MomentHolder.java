@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.models.Achievement;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.TimelineOwner;
@@ -30,13 +31,17 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
     TextView timestampText;
     TextView contentText;
 
+    TextView titleText;
+    TextView descText;
+    TextView pointText;
+
     CircleImageView profilePhoto;
     ImageView gameIcon;
 
     OnMomentClickListener listener;
     Moment moment;
 
-    public MomentHolder(View view, OnMomentClickListener listener) {
+    public MomentHolder(View view, int viewType, OnMomentClickListener listener) {
         super(view);
         this.listener = listener;
 
@@ -47,7 +52,13 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
         authorText = (TextView) view.findViewById(R.id.author);
         authorText.setOnClickListener(this);
         timestampText = (TextView) view.findViewById(R.id.created_at);
-        contentText = (TextView) view.findViewById(R.id.content);
+
+        if (viewType == Moment.ACHIEVEMENT) {
+            titleText = (TextView) view.findViewById(R.id.title);
+            descText = (TextView) view.findViewById(R.id.description);
+            pointText = (TextView) view.findViewById(R.id.point);
+        } else
+            contentText = (TextView) view.findViewById(R.id.content);
 
         gameIcon = (ImageView) view.findViewById(R.id.game_icon);
         gameIcon.setOnClickListener(this);
@@ -69,7 +80,13 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
         moment.getGame().getGameIcon(gameIcon);
         authorText.setText(moment.getAuthor().getUserName());
         timestampText.setText(moment.getTimeStamp());
-        contentText.setText(moment.getContent());
+        if (moment.getViewType() == Moment.ACHIEVEMENT) {
+            Achievement achievement = moment.getAchievement();
+            titleText.setText(achievement.getTitle());
+            descText.setText(achievement.getDescription());
+            pointText.setText(achievement.getPoint());
+        } else
+            contentText.setText(moment.getContent());
     }
 
     @Override

@@ -25,9 +25,6 @@ public class Moment extends Response {
     }
 
     public String getContent() {
-        // TODO: This is temp
-        if (getViewType() == ACHIEVEMENT)
-            return achievement.getTitle();
         return content;
     }
 
@@ -54,5 +51,9 @@ public class Moment extends Response {
 
     public Game getGame() {
         return game;
+    }
+
+    public Achievement getAchievement() {
+        return achievement;
     }
 }
