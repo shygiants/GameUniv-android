@@ -16,8 +16,10 @@ import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.fragments.GameListFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
+import kr.ac.korea.ee.shygiants.gameuniv.ui.GameListAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private AuthManager authManager;
 
     private NewsfeedFragment newsfeedFragment;
+    private GameListFragment gameListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +133,12 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.fragment_container, newsfeedFragment);
             transaction.commit();
         } else if (id == R.id.nav_games) {
+            if (gameListFragment == null) {
+                gameListFragment = new GameListFragment();
+            }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, gameListFragment);
+            transaction.commit();
 
         } else if (id == R.id.nav_achievement) {
 

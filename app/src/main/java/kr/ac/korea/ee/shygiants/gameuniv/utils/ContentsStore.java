@@ -150,6 +150,11 @@ public class ContentsStore {
     // For timeline
     private HashMap<String, Timeline> timelineStore = new HashMap<>();
 
+    // For game list
+    private ArrayList<Game> gameStore;
+    private RecyclerView.Adapter gameAdapter;
+    private SwipeRefreshLayout gameSwipe;
+
     public static void initFeed(User user) {
         singleton.user = user;
         singleton.getFeed();
@@ -251,5 +256,60 @@ public class ContentsStore {
         String key = owner.getKey();
         return (singleton.timelineStore.containsKey(key))?
                 singleton.timelineStore.get(key).getTimelineElementAt(position) : null;
+    }
+
+    public static void initGameList(RecyclerView.Adapter adapter) {
+        singleton.gameAdapter = adapter;
+        singleton.getGameList();
+    }
+
+    public static int getGameListElementsCount() {
+        return (singleton.gameStore != null)? singleton.gameStore.size() : 0;
+    }
+
+    public static Game getGameListElementAt(int position) {
+        return (singleton.gameStore != null)? singleton.gameStore.get(position) : null;
+    }
+
+    public static void refreshGameList(SwipeRefreshLayout swipeRefreshLayout) {
+        if (singleton.gameStore != null) {
+            singleton.gameStore.clear();
+            singleton.gameStore = null;
+            singleton.gameSwipe = swipeRefreshLayout;
+            singleton.getGameList();
+        }
+    }
+
+    private void getGameList() {
+        RESTAPI.Games.getAllGames()
+        .enqueue(new Callback<ArrayList<Game>>() {
+            @Override
+            public void onResponse(Response<ArrayList<Game>> response, Retrofit retrofit) {
+                // HERE IS MAIN THREAD!
+                switch (response.code()) {
+                    case 404: // Not Found
+                        break;
+                    case 500: // Server Error
+                        break;
+                    case 200:
+                        // TODO: Notify to all adapters
+                        gameStore = response.body();
+                        gameAdapter.notifyDataSetChanged();
+                        if (gameSwipe != null) {
+                            gameSwipe.setRefreshing(false);
+                            gameSwipe = null;
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                // HERE IS MAIN THREAD!
+                // TODO: Something wrong on network
+                // TODO: Ask user to retry
+                t.printStackTrace();
+            }
+        });
     }
 }

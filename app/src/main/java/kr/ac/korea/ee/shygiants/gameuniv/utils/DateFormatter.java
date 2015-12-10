@@ -43,6 +43,8 @@ public class DateFormatter {
                 return "어제 " + timeFormat.format(createdAt.getTime());
             else if (differenceInMinutes > HOUR_IN_MINUTES)
                 return (int)(differenceInMinutes / HOUR_IN_MINUTES) + "시간";
+            else if (differenceInMinutes == 0)
+                return "지금";
             else
                 return differenceInMinutes + "분";
         } catch (Exception e) {

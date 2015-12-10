@@ -56,8 +56,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             ContentsStore.refresh(swipeRefreshLayout);
     }
 
-
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Populate view

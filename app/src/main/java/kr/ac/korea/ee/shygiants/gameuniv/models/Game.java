@@ -14,6 +14,7 @@ import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
+import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
@@ -66,7 +67,8 @@ public class Game extends Response implements Target, TimelineOwner {
         Palette.Builder builder = Palette.from(bitmap);
         // Synchronously generate
         Palette palette = builder.generate();
-        int[] colors = { palette.getDarkMutedColor(Color.WHITE), palette.getLightMutedColor(Color.WHITE) };
+        int primaryColor = ImageHandler.getColor(R.color.colorPrimary);
+        int[] colors = { palette.getDarkMutedColor(primaryColor), palette.getLightMutedColor(primaryColor) };
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         listener.onCreateGradient(gradientDrawable);
     }

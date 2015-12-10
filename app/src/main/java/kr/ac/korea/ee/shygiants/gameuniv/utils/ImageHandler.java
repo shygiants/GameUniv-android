@@ -1,6 +1,8 @@
 package kr.ac.korea.ee.shygiants.gameuniv.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.v4.content.res.ResourcesCompat;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -14,11 +16,13 @@ public class ImageHandler {
     private static ImageHandler singleton;
 
     private Picasso picasso;
+    private Resources resources;
 
     public static void init(Context context) {
         if (singleton == null)
             singleton = new ImageHandler();
         singleton.picasso = Picasso.with(context);
+        singleton.resources = context.getResources();
     }
 
     public static RequestCreator load(String path) {
@@ -37,5 +41,9 @@ public class ImageHandler {
         }
 
         return singleton.picasso.load(file);
+    }
+
+    public static int getColor(int resourceId) {
+        return singleton.resources.getColor(resourceId);
     }
 }
