@@ -1,5 +1,6 @@
 package kr.ac.korea.ee.shygiants.gameuniv.ui;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 /**
  * Created by SHYBook_Air on 15. 11. 19..
  */
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String NEWSFEED = "NEWSFEED";
     private static final String TIMELINE = "TIMELINE";
@@ -25,6 +26,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String context;
     private TimelineOwner owner;
     private MomentHolder.OnMomentClickListener listener;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public FeedAdapter(TimelineOwner owner, MomentHolder.OnMomentClickListener listener) {
         context = TIMELINE;
@@ -40,6 +42,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean isTimeline() {
         return context.equals(TIMELINE);
     }
+
+    public void setSwipeRefreshLayout(SwipeRefreshLayout swipe) {
+        swipeRefreshLayout = swipe;
+        swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        if (isTimeline())
+            ContentsStore.refreshTimeline(owner, swipeRefreshLayout);
+        else
+            ContentsStore.refresh(swipeRefreshLayout);
+    }
+
+
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {

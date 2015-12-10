@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +49,9 @@ public class NewsfeedFragment extends Fragment implements MomentHolder.OnMomentC
         MainActivity activity = (MainActivity)getActivity();
         activity.setSupportActionBar(toolbar);
         activity.initNavigationView(toolbar);
+
+        SwipeRefreshLayout swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+        feedAdapter.setSwipeRefreshLayout(swipe);
 
         feedView = (RecyclerView) view.findViewById(R.id.feed);
         feedView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));

@@ -17,7 +17,6 @@ import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
-import kr.ac.korea.ee.shygiants.gameuniv.fragments.ProfileFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity
     private AuthManager authManager;
 
     private NewsfeedFragment newsfeedFragment;
-    private ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

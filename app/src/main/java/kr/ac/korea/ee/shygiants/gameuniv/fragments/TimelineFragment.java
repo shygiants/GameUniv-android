@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,6 +32,7 @@ public class TimelineFragment extends Fragment implements MomentHolder.OnMomentC
 
     private RecyclerView timelineView;
     private FeedAdapter timelineAdapter;
+    private User user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class TimelineFragment extends Fragment implements MomentHolder.OnMomentC
 
         Bundle arguments = getArguments();
         Gson gson = new Gson();
-        User user = (arguments.getBoolean(IS_OWNER))?
+        user = (arguments.getBoolean(IS_OWNER))?
                 ContentsStore.getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
 
         timelineAdapter = new FeedAdapter(user, this);
@@ -55,6 +57,12 @@ public class TimelineFragment extends Fragment implements MomentHolder.OnMomentC
         timelineView.setAdapter(timelineAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        ContentsStore.removeTimelineAdapter(user, timelineAdapter);
+        super.onDestroy();
     }
 
     @Override

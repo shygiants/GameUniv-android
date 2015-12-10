@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,11 +84,20 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
         TextView gameNameText = (TextView) view.findViewById(R.id.game_name_text);
         gameNameText.setText(game.getGameName());
 
+//        SwipeRefreshLayout swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+//        timelineAdapter.setSwipeRefreshLayout(swipe);
+
         timelineView = (RecyclerView) view.findViewById(R.id.timeline);
         timelineView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
         timelineView.setAdapter(timelineAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        ContentsStore.removeTimelineAdapter(game, timelineAdapter);
+        super.onDestroy();
     }
 
     @Override

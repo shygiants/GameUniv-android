@@ -1,6 +1,8 @@
 package kr.ac.korea.ee.shygiants.gameuniv.utils;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,21 +21,35 @@ import retrofit.Retrofit;
 public class ContentsStore {
 
     private static class Timeline {
-        private String key;
+        private TimelineOwner owner;
         private ArrayList<Moment> store;
         // TODO: Consider duplication
         private ArrayList<RecyclerView.Adapter> adapters;
+        private SwipeRefreshLayout swipe;
 
         public Timeline(TimelineOwner owner, RecyclerView.Adapter adapter) {
-            key = owner.getKey();
+            this.owner = owner;
             adapters = new ArrayList<>();
             pushAdapter(adapter);
-            if (owner instanceof User) getTimelineForUser();
-            else getTimelineForGame();
+            getTimeline();
         }
 
         public void pushAdapter(RecyclerView.Adapter adapter) {
             adapters.add(adapter);
+        }
+
+        public void removeAdapter(RecyclerView.Adapter adapter) {
+            adapters.remove(adapter);
+            Log.i("ContentsStore", "Adapter removed");
+        }
+
+        public void refresh(SwipeRefreshLayout swipe) {
+            if (store != null) {
+                store.clear();
+                store = null;
+                this.swipe = swipe;
+                getTimeline();
+            }
         }
 
         public int getTimelineElementsCount() {
@@ -44,8 +60,13 @@ public class ContentsStore {
             return (store != null)? store.get(position) : null;
         }
 
+        private void getTimeline() {
+            if (owner instanceof User) getTimelineForUser();
+            else getTimelineForGame();
+        }
+
         private void getTimelineForUser() {
-            RESTAPI.Moments.getTimelineForUser(key, singleton.user.getAuthToken())
+            RESTAPI.Moments.getTimelineForUser(owner.getKey(), singleton.user.getAuthToken())
                     .enqueue(new Callback<ArrayList<Moment>>() {
                         @Override
                         public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {
@@ -62,6 +83,10 @@ public class ContentsStore {
                                     store = response.body();
                                     for (RecyclerView.Adapter adapter : adapters)
                                         adapter.notifyDataSetChanged();
+                                    if (swipe != null) {
+                                        swipe.setRefreshing(false);
+                                        swipe = null;
+                                    }
                                     break;
                             }
                         }
@@ -77,7 +102,7 @@ public class ContentsStore {
         }
 
         private void getTimelineForGame() {
-            RESTAPI.Moments.getTimelineForGame(key, singleton.user.getAuthToken())
+            RESTAPI.Moments.getTimelineForGame(owner.getKey(), singleton.user.getAuthToken())
                     .enqueue(new Callback<ArrayList<Moment>>() {
                         @Override
                         public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {
@@ -94,6 +119,10 @@ public class ContentsStore {
                                     store = response.body();
                                     for (RecyclerView.Adapter adapter : adapters)
                                         adapter.notifyDataSetChanged();
+                                    if (swipe != null) {
+                                        swipe.setRefreshing(false);
+                                        swipe = null;
+                                    }
                                     break;
                             }
                         }
@@ -116,6 +145,7 @@ public class ContentsStore {
     private User user;
     private ArrayList<RecyclerView.Adapter> adapters = new ArrayList<>();
     private ArrayList<Moment> feedStore;
+    private SwipeRefreshLayout swipe;
 
     // For timeline
     private HashMap<String, Timeline> timelineStore = new HashMap<>();
@@ -142,6 +172,19 @@ public class ContentsStore {
         singleton.adapters.add(adapter);
     }
 
+    public static void removeAdapter(RecyclerView.Adapter adapter) {
+        singleton.adapters.remove(adapter);
+    }
+
+    public static void refresh(SwipeRefreshLayout swipeRefreshLayout) {
+        if (singleton.feedStore != null) {
+            singleton.feedStore.clear();
+            singleton.feedStore = null;
+            singleton.swipe = swipeRefreshLayout;
+            singleton.getFeed();
+        }
+    }
+
     private void getFeed() {
         RESTAPI.Moments.getFeed(user.getEmail(), user.getAuthToken())
         .enqueue(new Callback<ArrayList<Moment>>() {
@@ -160,6 +203,10 @@ public class ContentsStore {
                         feedStore = response.body();
                         for (RecyclerView.Adapter adapter : adapters)
                             adapter.notifyDataSetChanged();
+                        if (swipe != null) {
+                            swipe.setRefreshing(false);
+                            swipe = null;
+                        }
                         break;
                 }
             }
@@ -180,6 +227,18 @@ public class ContentsStore {
             singleton.timelineStore.get(key).pushAdapter(adapter);
 
         singleton.timelineStore.put(key, new Timeline(owner, adapter));
+    }
+
+    public static void removeTimelineAdapter(TimelineOwner owner, RecyclerView.Adapter adapter) {
+        String key = owner.getKey();
+        if (singleton.timelineStore.containsKey(key))
+            singleton.timelineStore.get(key).removeAdapter(adapter);
+    }
+
+    public static void refreshTimeline(TimelineOwner owner, SwipeRefreshLayout swipeRefreshLayout) {
+        String key = owner.getKey();
+        if (singleton.timelineStore.containsKey(key))
+            singleton.timelineStore.get(key).refresh(swipeRefreshLayout);
     }
 
     public static int getTimelineElementsCount(TimelineOwner owner) {
