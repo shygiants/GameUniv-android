@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
+
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
@@ -24,6 +26,7 @@ public class Game extends Response implements Target, TimelineOwner {
     private String _id;
     private String gameName;
     private String contactEmail;
+    private ArrayList<Achievement> achievements;
 
     private OnCreateGradientListener listener;
 

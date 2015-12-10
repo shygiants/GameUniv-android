@@ -9,6 +9,7 @@ public class Moment extends Response {
 
     public static final int TEXT = 0;
     public static final int SCORE = 1;
+    public static final int ACHIEVEMENT = 2;
 
     private String _id;
     private String created_at;
@@ -16,6 +17,7 @@ public class Moment extends Response {
     private String type;
     private User author;
     private Game game;
+    private Achievement achievement;
 
 
     public String getTimeStamp() {
@@ -23,6 +25,9 @@ public class Moment extends Response {
     }
 
     public String getContent() {
+        // TODO: This is temp
+        if (getViewType() == ACHIEVEMENT)
+            return achievement.getTitle();
         return content;
     }
 
@@ -36,6 +41,8 @@ public class Moment extends Response {
                 return TEXT;
             case "score":
                 return SCORE;
+            case "achievement":
+                return ACHIEVEMENT;
             default:
                 return TEXT;
         }

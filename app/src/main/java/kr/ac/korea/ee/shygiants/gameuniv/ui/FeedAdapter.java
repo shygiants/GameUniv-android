@@ -73,6 +73,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         int resourceId;
         switch (viewType) {
+            // TODO: Handle achievement moments
+            case Moment.ACHIEVEMENT:
             case Moment.TEXT:
                 resourceId = R.layout.card_moment_text;
                 break;
