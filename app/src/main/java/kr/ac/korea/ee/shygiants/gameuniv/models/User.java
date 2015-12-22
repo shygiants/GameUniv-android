@@ -1,11 +1,9 @@
 package kr.ac.korea.ee.shygiants.gameuniv.models;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.graphics.Palette;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.okhttp.*;

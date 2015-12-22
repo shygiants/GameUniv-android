@@ -2,17 +2,14 @@ package kr.ac.korea.ee.shygiants.gameuniv.ui;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
-import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.TimelineOwner;
-import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 
 /**

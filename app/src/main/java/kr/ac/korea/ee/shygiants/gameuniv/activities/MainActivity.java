@@ -19,7 +19,6 @@ import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.GameListFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
-import kr.ac.korea.ee.shygiants.gameuniv.ui.GameListAdapter;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;

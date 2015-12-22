@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthTokens;
 import kr.ac.korea.ee.shygiants.gameuniv.models.AuthToken;
 import kr.ac.korea.ee.shygiants.gameuniv.models.RequestBody;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
@@ -137,7 +136,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            RESTAPI.AuthTokens.getAuthToken(email, RequestBody.create(password))
+            RESTAPI.Tokens.getAuthToken(email, RequestBody.create(password))
             .enqueue(new Callback<AuthToken>() {
                 @Override
                 public void onResponse(retrofit.Response<AuthToken> response, Retrofit retrofit) {

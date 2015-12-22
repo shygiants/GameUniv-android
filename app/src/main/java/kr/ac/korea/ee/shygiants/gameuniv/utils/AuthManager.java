@@ -14,8 +14,6 @@ import java.io.IOException;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.activities.AuthorizationActivity;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.AuthCodes;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.Users;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Response;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import retrofit.Callback;
@@ -146,7 +144,7 @@ public class AuthManager {
     public void getAuthCode(String gameId, final AuthCodeCallback callback) {
         if (email == null || authToken == null) callback.onGettingAuthCode(null);
 
-        RESTAPI.AuthCodes.getAuthCode(email, authToken, gameId, "code")
+        RESTAPI.Tokens.getAuthCode(email, authToken, gameId, "code")
                 .enqueue(new Callback<Response>() {
                     @Override
                     public void onResponse(retrofit.Response<Response> response, Retrofit retrofit) {

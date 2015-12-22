@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
-import kr.ac.korea.ee.shygiants.gameuniv.apis.Games;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
