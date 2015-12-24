@@ -6,8 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
@@ -50,20 +52,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
             informingText = (TextView) findViewById(R.id.informingText);
 
             authManager = AuthManager.initWithCustomCallback(this, this);
-            RESTAPI.Games.getGame(gameId).enqueue(new Callback<Game>() {
-                @Override
-                public void onResponse(Response<Game> response, Retrofit retrofit) {
-                    game = response.body();
-                    String msg = String.format(getString(R.string.auth_message), game.getGameName());
-                    informingText.setText(msg);
-                }
 
-                @Override
-                public void onFailure(Throwable t) {
-                    // TODO: Error Handling
-                    t.printStackTrace();
-                }
-            });
 
         } else {
             fail();
@@ -73,7 +62,25 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onGettingUserInfo(User user) {
         // TODO: Display user info and prompt user
+        RESTAPI.Games.getGame(user.getAuthToken(), gameId).enqueue(new Callback<Game>() {
+            @Override
+            public void onResponse(Response<Game> response, Retrofit retrofit) {
+                game = response.body();
+                ImageView gameIcon = (ImageView)findViewById(R.id.game_icon);
+                game.getGameIcon(gameIcon);
+                String msg = String.format(getString(R.string.auth_message), game.getGameName());
+                informingText.setText(msg);
+            }
 
+            @Override
+            public void onFailure(Throwable t) {
+                // TODO: Error Handling
+                t.printStackTrace();
+            }
+        });
+
+        CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
+        user.getProfilePhoto(userProfile);
 
         findViewById(R.id.button_get_auth_code).setOnClickListener(this);
         findViewById(R.id.button_reject).setOnClickListener(this);
