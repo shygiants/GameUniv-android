@@ -95,6 +95,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             case Moment.ACHIEVEMENT:
                 resourceId = R.layout.card_moment_achievement;
                 break;
+            case Moment.IMAGE:
+                resourceId = R.layout.card_moment_image;
+                break;
             default:
                 resourceId = R.layout.card_moment_text;
                 break;

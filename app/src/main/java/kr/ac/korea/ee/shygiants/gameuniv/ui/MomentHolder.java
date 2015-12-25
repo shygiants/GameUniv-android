@@ -31,6 +31,8 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
     TextView timestampText;
     TextView contentText;
 
+    ImageView image;
+
     TextView titleText;
     TextView descText;
     TextView pointText;
@@ -53,12 +55,18 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
         authorText.setOnClickListener(this);
         timestampText = (TextView) view.findViewById(R.id.created_at);
 
-        if (viewType == Moment.ACHIEVEMENT) {
-            titleText = (TextView) view.findViewById(R.id.title);
-            descText = (TextView) view.findViewById(R.id.description);
-            pointText = (TextView) view.findViewById(R.id.point);
-        } else
-            contentText = (TextView) view.findViewById(R.id.content);
+        switch (viewType) {
+            case Moment.ACHIEVEMENT:
+                titleText = (TextView) view.findViewById(R.id.title);
+                descText = (TextView) view.findViewById(R.id.description);
+                pointText = (TextView) view.findViewById(R.id.point);
+                break;
+            case Moment.IMAGE:
+                image = (ImageView) view.findViewById(R.id.image);
+            default:
+                contentText = (TextView) view.findViewById(R.id.content);
+                break;
+        }
 
         gameIcon = (ImageView) view.findViewById(R.id.game_icon);
         gameIcon.setOnClickListener(this);
@@ -80,13 +88,24 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
         moment.getGame().getGameIcon(gameIcon);
         authorText.setText(moment.getAuthor().getUserName());
         timestampText.setText(moment.getTimeStamp());
-        if (moment.getViewType() == Moment.ACHIEVEMENT) {
-            Achievement achievement = moment.getAchievement();
-            titleText.setText(achievement.getTitle());
-            descText.setText(achievement.getDescription());
-            pointText.setText(achievement.getPoint());
-        } else
-            contentText.setText(moment.getContent());
+
+        switch (moment.getViewType()) {
+            case Moment.ACHIEVEMENT:
+                Achievement achievement = moment.getAchievement();
+                titleText.setText(achievement.getTitle());
+                descText.setText(achievement.getDescription());
+                pointText.setText(achievement.getPoint());
+                break;
+            case Moment.IMAGE:
+                moment.getImage(image);
+            default:
+                String content = moment.getContent();
+                if (content != null)
+                    contentText.setText(moment.getContent());
+                else
+                    contentText.setVisibility(View.GONE);
+                break;
+        }
     }
 
     @Override

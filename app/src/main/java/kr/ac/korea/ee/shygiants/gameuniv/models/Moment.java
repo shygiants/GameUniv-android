@@ -1,6 +1,10 @@
 package kr.ac.korea.ee.shygiants.gameuniv.models;
 
+import android.widget.ImageView;
+
 import kr.ac.korea.ee.shygiants.gameuniv.utils.DateFormatter;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
 
 /**
  * Created by SHYBook_Air on 15. 11. 19..
@@ -10,6 +14,7 @@ public class Moment extends Response {
     public static final int TEXT = 0;
     public static final int SCORE = 1;
     public static final int ACHIEVEMENT = 2;
+    public static final int IMAGE = 3;
 
     private String _id;
     private String created_at;
@@ -40,9 +45,15 @@ public class Moment extends Response {
                 return SCORE;
             case "achievement":
                 return ACHIEVEMENT;
+            case "image":
+                return IMAGE;
             default:
                 return TEXT;
         }
+    }
+
+    public void getImage(ImageView imageView) {
+        ImageHandler.load(RESTAPI.getURL() + "/moments/" + _id + "/images").into(imageView);
     }
 
     public User getAuthor() {
