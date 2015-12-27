@@ -12,11 +12,12 @@ import retrofit.Retrofit;
  */
 public class RESTAPI {
 
+    private final static String apiEndPoint = "game-univ-back-end-shygiants.c9users.io";
 //    private final static String apiEndPoint = "172.30.21.55";
     // 학회실
 //    private final static String apiEndPoint = "192.168.0.26";
     // 자취방
-    private final static String apiEndPoint = "192.168.0.7";
+//    private final static String apiEndPoint = "192.168.0.7";
     private final static String port = "3000";
 
     private static RESTAPI ourInstance = new RESTAPI();
@@ -30,8 +31,11 @@ public class RESTAPI {
         return ourInstance.retrofit.create(service);
     }
 
+//    public static String getURL() {
+//        return "http://" + apiEndPoint + ":" + port;
+//    }
     public static String getURL() {
-        return "http://" + apiEndPoint + ":" + port;
+        return "https://" + apiEndPoint;
     }
 
     private Retrofit retrofit;
