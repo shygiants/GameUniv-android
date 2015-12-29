@@ -6,7 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v7.graphics.Palette;
 import android.widget.ImageView;
 
-import com.squareup.okhttp.*;
+import com.squareup.okhttp.MediaType;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -17,72 +17,61 @@ import java.util.ArrayList;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.NetworkTask;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
+import retrofit.Call;
 import retrofit.Retrofit;
 
 /**
  * Created by SHYBook_Air on 15. 10. 5..
  */
-public class User extends Response implements Target, TimelineOwner {
+        public class User extends Response implements Target, TimelineOwner {
 
-    private String _id;
-    private String userName;
-    private String email;
-    private ArrayList<Game> havePlayed;
+            private String _id;
+            private String userName;
+            private String email;
+            private ArrayList<Game> havePlayed;
 
-    private String authToken;
-    private OnCreateGradientListener listener;
+            private String authToken;
+            private OnCreateGradientListener listener;
 
-    public String getEmail() {
-        return email;
-    }
+            public String getEmail() {
+                return email;
+            }
 
-    public String getUserName() {
-        return userName;
-    }
+            public String getUserName() {
+                return userName;
+            }
 
 //    public ArrayList getPlayedGames() {
 //        return havePlayed;
 //    }
 
-    public void setAuthToken(final String authToken) {
-        this.authToken = authToken;
-    }
+            public void setAuthToken(final String authToken) {
+                this.authToken = authToken;
+            }
 
-    public String getAuthToken() {
-        return authToken;
-    }
+            public String getAuthToken() {
+                return authToken;
+            }
 
-    public void setProfilePhoto(final File profileFile, final ImageView profile) {
-        com.squareup.okhttp.RequestBody requestBody =
-                com.squareup.okhttp.RequestBody.create(MediaType.parse("multipart/form-data"), profileFile);
+            public void setProfilePhoto(final File profileFile, final ImageView profile) {
+                com.squareup.okhttp.RequestBody requestBody =
+                        com.squareup.okhttp.RequestBody.create(MediaType.parse("multipart/form-data"), profileFile);
 
-        RESTAPI.Users.uploadProfilePhoto(email, requestBody, authToken)
-                .enqueue(new retrofit.Callback<String>() {
-                    @Override
-                    public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
-                        // HERE IS MAIN THREAD!
-                        switch (response.code()) {
-                            // TODO: Error Handling
-                            case 401: // Unauthorized
-                                break;
-                            case 500: // Server Error
-                                break;
-                            case 404: // Not Found
-                                break;
-                            case 200:
+                Call<String> task = RESTAPI.Users.uploadProfilePhoto(email, requestBody, authToken);
+                NetworkTask<String> uploadProfilePhoto = new NetworkTask.Builder<>(task)
+                        .onSuccess(new NetworkTask.OnSuccessListener<String>() {
+                            @Override
+                            public void onSuccess(String responseBody) {
                                 // TODO: Notify to all users
                                 ImageHandler.load(profileFile).into(profile);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        // TODO: Error Handling
-                        t.printStackTrace();
-                    }
-                });
+                            }
+                        }) // TODO: Error Handling
+                        .showSnackBar(false)
+                        .build();
+                uploadProfilePhoto.execute();
     }
 
     public boolean equals(User user) {

@@ -28,6 +28,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.TransactionManager;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    DrawerLayout drawer;
     private View profileArea;
     private CircleImageView profilePhoto;
     private TextView userNameText;
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         profileArea = findViewById(R.id.profile_area);
         profileArea.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +90,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

@@ -16,6 +16,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.activities.AuthorizationActivity;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Response;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
+import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Retrofit;
 
@@ -98,39 +99,30 @@ public class AuthManager {
     }
 
     private void getUserInfo() {
-        RESTAPI.Users.getUser(email, authToken).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(retrofit.Response<User> response, Retrofit retrofit) {
-                // HERE IS MAIN THREAD!
-                switch (response.code()) {
-                    case 401: // Unauthorized
-                        accountManager.invalidateAuthToken(ACCOUNT_TYPE, authToken);
-                        requestAuthToken();
-                        break;
-                    case 500:
-                        // TODO: Ask user to retry
-                        break;
-                    case 200:
-                        user = response.body();
+        Call<User> task = RESTAPI.Users.getUser(email, authToken);
+        NetworkTask<User> getUser = new NetworkTask.Builder<>(task)
+                .onSuccess(new NetworkTask.OnSuccessListener<User>() {
+                    @Override
+                    public void onSuccess(User responseBody) {
+                        user = responseBody;
                         user.setAuthToken(authToken);
                         if (loadContents)
                             ContentsStore.initFeed(user);
                         Log.i("AuthManager", "User is initialized");
                         if (userInfoCallback != null)
                             userInfoCallback.onGettingUserInfo(user);
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                // HERE IS MAIN THREAD!
-                // TODO: Something wrong on network
-                // TODO: Ask user to retry
-                Log.e("AuthManager", "Getting user info failed");
-                t.printStackTrace();
-            }
-        });
+                    }
+                })
+                .showSnackBar(false)
+                .on(401, new NetworkTask.OnResponseListener<User>() {
+                    @Override
+                    public void on(int statusCode, retrofit.Response<User> response) {
+                        accountManager.invalidateAuthToken(ACCOUNT_TYPE, authToken);
+                        requestAuthToken();
+                    }
+                })
+                .build();
+        getUser.execute();
     }
 
     public void getUser(UserInfoCallback callback) {
@@ -144,26 +136,22 @@ public class AuthManager {
     public void getAuthCode(String gameId, final AuthCodeCallback callback) {
         if (email == null || authToken == null) callback.onGettingAuthCode(null);
 
-        RESTAPI.Tokens.getAuthCode(email, authToken, gameId, "code")
-                .enqueue(new Callback<Response>() {
+        Call<Response> task = RESTAPI.Tokens.getAuthCode(email, authToken, gameId, "code");
+        NetworkTask<Response> getAuthCode = new NetworkTask.Builder<>(task)
+                .onSuccess(new NetworkTask.OnSuccessListener<Response>() {
                     @Override
-                    public void onResponse(retrofit.Response<Response> response, Retrofit retrofit) {
-
-                        switch (response.code()) {
-                            case 302:
-                                // TODO: Error handling
-                                Uri location = Uri.parse(response.headers().get("Location"));
-                                callback.onGettingAuthCode(location.getQueryParameter("code"));
-                                break;
-                        }
-                    }
-
+                    public void onSuccess(Response responseBody) { /* DO NOTHING */ }
+                })
+                // TODO: Error Handling
+                .on(302, new NetworkTask.OnResponseListener<Response>() {
                     @Override
-                    public void onFailure(Throwable t) {
-                        // TODO: Something wrong on network
-                        // TODO: Ask user to retry
-                        t.printStackTrace();
+                    public void on(int statusCode, retrofit.Response<Response> response) {
+                        Uri location = Uri.parse(response.headers().get("Location"));
+                        callback.onGettingAuthCode(location.getQueryParameter("code"));
                     }
-                });
+                })
+                .showSnackBar(false)
+                .build();
+        getAuthCode.execute();
     }
 }

@@ -14,7 +14,9 @@ import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.NetworkTask;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
+import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -33,6 +35,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     private String gameId;
     private AuthManager authManager;
 
+    private View container;
     private TextView informingText;
 
     @Override
@@ -49,6 +52,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
             // TODO: prompt user
             setContentView(R.layout.activity_authorization);
 
+            container = findViewById(R.id.container);
             informingText = (TextView) findViewById(R.id.informingText);
 
             authManager = AuthManager.initWithCustomCallback(this, this);
@@ -61,23 +65,22 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onGettingUserInfo(User user) {
-        // TODO: Display user info and prompt user
-        RESTAPI.Games.getGame(user.getAuthToken(), gameId).enqueue(new Callback<Game>() {
-            @Override
-            public void onResponse(Response<Game> response, Retrofit retrofit) {
-                game = response.body();
-                ImageView gameIcon = (ImageView)findViewById(R.id.game_icon);
-                game.getGameIcon(gameIcon);
-                String msg = String.format(getString(R.string.auth_message), game.getGameName());
-                informingText.setText(msg);
-            }
+        Call<Game> task = RESTAPI.Games.getGame(user.getAuthToken(), gameId);
 
-            @Override
-            public void onFailure(Throwable t) {
-                // TODO: Error Handling
-                t.printStackTrace();
-            }
-        });
+        NetworkTask<Game> getGame = new NetworkTask.Builder<>(task)
+                .onSuccess(new NetworkTask.OnSuccessListener<Game>() {
+                    @Override
+                    public void onSuccess(Game response) {
+                        game = response;
+                        ImageView gameIcon = (ImageView) findViewById(R.id.game_icon);
+                        game.getGameIcon(gameIcon);
+                        String msg = String.format(getString(R.string.auth_message), game.getGameName());
+                        informingText.setText(msg);
+                    }
+                })
+                .setContext(container)
+                .build();
+        getGame.execute();
 
         CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
         user.getProfilePhoto(userProfile);

@@ -22,9 +22,12 @@ import android.widget.TextView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.AuthToken;
 import kr.ac.korea.ee.shygiants.gameuniv.models.RequestBody;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.NetworkTask;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.Regex;
+import retrofit.Call;
 import retrofit.Callback;
+import retrofit.Response;
 import retrofit.Retrofit;
 
 
@@ -34,6 +37,7 @@ import retrofit.Retrofit;
 public class LoginActivity extends AccountAuthenticatorActivity {
 
     // UI references.
+    private View container;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -61,6 +65,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
 
         setContentView(R.layout.activity_login);
+        container = findViewById(R.id.container);
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
 
@@ -136,38 +141,28 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            RESTAPI.Tokens.getAuthToken(email, RequestBody.create(password))
-            .enqueue(new Callback<AuthToken>() {
-                @Override
-                public void onResponse(retrofit.Response<AuthToken> response, Retrofit retrofit) {
-                    showProgress(false);
-                    switch (response.code()) {
-                        case 400: // Bad Request
-                            // TODO: Fancy error handling
+            Call<AuthToken> task = RESTAPI.Tokens.getAuthToken(email, RequestBody.create(password));
+            NetworkTask<AuthToken> networkTask = new NetworkTask.Builder<>(task)
+                    .onSuccess(new NetworkTask.OnSuccessListener<AuthToken>() {
+                        @Override
+                        public void onSuccess(AuthToken authToken) {
+                            showProgress(false);
+                            loginSuccess(email, password, authToken);
+                        }
+                    })
+                    .on(400, new NetworkTask.OnResponseListener<AuthToken>() {
+                        @Override
+                        public void on(int statusCode, Response<AuthToken> response) {
+                            showProgress(false);
                             mEmailView.setError(getString(R.string.error_invalid_email));
                             mPasswordView.setError(getString(R.string.error_incorrect_password));
                             mEmailView.requestFocus();
-                            break;
-                        case 500:
-                            // TODO: Server error handling
-                            break;
-                        default:
-                            AuthToken authToken = response.body();
-                            // TODO: Login success
-                            loginSuccess(email, password, authToken);
-                            break;
-                    }
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    // TODO: Something wrong on network
-                    showProgress(false);
-                    mEmailView.setError(getString(R.string.error_invalid_email));
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mEmailView.requestFocus();
-                }
-            });
+                        }
+                    })
+                    .showSnackBar(false)
+                    .setContext(container)
+                    .build();
+            networkTask.execute();
         }
     }
 
