@@ -1,4 +1,4 @@
-package kr.ac.korea.ee.shygiants.gameuniv;
+package io.github.shygiants.gameuniv;
 
 import org.junit.Test;
 

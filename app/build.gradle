@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "kr.ac.korea.ee.shygiants.gameuniv"
+        applicationId "io.github.shygiants.gameuniv"
         minSdkVersion 21
         targetSdkVersion 22
         versionCode 1

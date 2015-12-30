@@ -15,7 +15,7 @@
 
     <string name="auth_message">게임 \'%s\'이 회원님의 계정으로 로그인을 하고자 합니다</string>
     <string name="auth_scheme">gameUniv</string>
-    <string name="auth_account_type">kr.ac.korea.ee.shygiants</string>
+    <string name="auth_account_type">io.github.shygiants.gameuniv</string>
     <string name="auth_full_access">Full Access</string>
     <string name="auth_full_access_label">계정에 대한 모든 권한</string>
     <string name="auth_game_login">Game Login</string>
