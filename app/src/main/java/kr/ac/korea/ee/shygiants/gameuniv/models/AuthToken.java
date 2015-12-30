@@ -5,10 +5,12 @@ package kr.ac.korea.ee.shygiants.gameuniv.models;
  */
 public class AuthToken extends Response {
 
-    private String token;
+    private String auth_token;
+    // TODO: Make use of expires_in
+    private String expires_in;
 
     @Override
     public String toString() {
-        return token;
+        return auth_token;
     }
 }

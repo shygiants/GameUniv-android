@@ -1,5 +1,6 @@
 package kr.ac.korea.ee.shygiants.gameuniv.utils;
 
+import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.view.View;
 import java.util.HashMap;
 import java.util.Map;
 
+import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.app.GameUniv;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -30,8 +33,8 @@ public class NetworkTask<T> implements Callback<T> {
             return this;
         }
 
-        public Builder<U> setContext(View context) {
-            handler.setContext(context);
+        public Builder<U> setContainer(View container) {
+            handler.setContainer(container);
             return this;
         }
 
@@ -60,27 +63,42 @@ public class NetworkTask<T> implements Callback<T> {
         void on(int statusCode, Response<T> response);
     }
 
+    private static Context context;
+    private static String snackBarServerErr;
+    private static String snackBarConnectionErr;
+    private static String snackBarAction;
+    public static void init(Context context) {
+        NetworkTask.context = context;
+        snackBarConnectionErr= context.getString(R.string.snack_bar_connection_err);
+        snackBarServerErr= context.getString(R.string.snack_bar_server_err);
+        snackBarAction = context.getString(R.string.snack_bar_action);
+    }
+
     private Call<T> task;
-    private View context;
+    private View container;
     private OnSuccessListener<T> onSuccessListener;
     private Map<Integer, OnResponseListener<T>> callbacks = new HashMap<>();
-    private boolean showSnackBar = true;
+    private boolean showSnackBar;
 
     private NetworkTask(Call<T> task) {
         this.task = task;
+        showSnackBar = true;
     }
 
-    private void makeSnackBar() {
+    private void makeSnackBar(String snackBarMsg) {
         if (!showSnackBar) return;
+        View view = (container != null)?
+                container : ((GameUniv)context.getApplicationContext()).getContainerView();
         Snackbar snackbar = Snackbar
-                .make(context, "Connection Failed", Snackbar.LENGTH_INDEFINITE)
-                .setAction("RETRY", new View.OnClickListener() {
+                .make(view, snackBarMsg, Snackbar.LENGTH_INDEFINITE)
+                .setAction(snackBarAction, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         execute();
                     }
                 });
 
+        Log.i("SnackBar", snackBarMsg);
         snackbar.show();
     }
 
@@ -95,18 +113,20 @@ public class NetworkTask<T> implements Callback<T> {
                 onSuccessListener.onSuccess(response.body());
                 return;
             case 500: // Server Error
-                makeSnackBar();
+                makeSnackBar(snackBarServerErr);
                 break;
             case 404: // Not Found
-                makeSnackBar();
+                makeSnackBar(snackBarServerErr);
                 break;
             case 400: // Bad Request
-                makeSnackBar();
+                makeSnackBar(snackBarServerErr);
                 break;
             case 401: // Unauthorized
-                makeSnackBar();
+                // TODO: Request new auth token
+                makeSnackBar(snackBarServerErr);
                 break;
             default:
+                makeSnackBar(snackBarServerErr);
                 break;
         }
 
@@ -117,7 +137,7 @@ public class NetworkTask<T> implements Callback<T> {
     @Override
     public void onFailure(Throwable t) {
         t.printStackTrace();
-        makeSnackBar();
+        makeSnackBar(snackBarConnectionErr);
     }
 
     private void logResponse(Response<?> response) {
@@ -128,12 +148,12 @@ public class NetworkTask<T> implements Callback<T> {
         this.onSuccessListener = onSuccessListener;
     }
 
-    private void setContext(View context) {
-        this.context = context;
+    private void setContainer(View container) {
+        this.container = container;
     }
 
     private boolean isSufficient() {
-        return (task != null && onSuccessListener != null && (!showSnackBar && context != null));
+        return (task != null && onSuccessListener != null);
     }
 
     private void putCallback(int statusCode, OnResponseListener<T> callback) {
@@ -147,6 +167,6 @@ public class NetworkTask<T> implements Callback<T> {
     }
 
     public void execute() {
-        task.enqueue(this);
+        task.clone().enqueue(this);
     }
 }

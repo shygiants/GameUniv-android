@@ -53,7 +53,7 @@ public class Moment extends Response {
     }
 
     public void getImage(ImageView imageView) {
-        ImageHandler.load(RESTAPI.getURL() + "/moments/" + _id + "/images").into(imageView);
+        ImageHandler.getInstance().load(RESTAPI.getURL() + "/moments/" + _id + "/images").into(imageView);
     }
 
     public User getAuthor() {

@@ -9,19 +9,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.Callback;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.NetworkTask;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
 import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
 
-public class AuthorizationActivity extends AppCompatActivity implements View.OnClickListener, AuthManager.UserInfoCallback {
+public class AuthorizationActivity extends AppCompatActivity implements View.OnClickListener, Callback<User> {
 
     // Incoming intent keys
     private static final String GAME_LOGIN = "gameLogin";
@@ -31,12 +31,12 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     public static final String AUTH_CODE = "AUTH_CODE";
 
     private Game game;
-
     private String gameId;
-    private AuthManager authManager;
 
-    private View container;
-    private TextView informingText;
+    @Bind(R.id.container)
+    View container;
+    @Bind(R.id.informing_text)
+    TextView informingText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +51,16 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
             && !TextUtils.isEmpty(gameId)) {
             // TODO: prompt user
             setContentView(R.layout.activity_authorization);
+            ButterKnife.bind(this);
 
-            container = findViewById(R.id.container);
-            informingText = (TextView) findViewById(R.id.informingText);
-
-            authManager = AuthManager.initWithCustomCallback(this, this);
-
-
+            AuthManager.getInstance().registerCallback(this);
         } else {
             fail();
         }
     }
 
     @Override
-    public void onGettingUserInfo(User user) {
+    public void pass(User user) {
         Call<Game> task = RESTAPI.Games.getGame(user.getAuthToken(), gameId);
 
         NetworkTask<Game> getGame = new NetworkTask.Builder<>(task)
@@ -78,7 +74,7 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
                         informingText.setText(msg);
                     }
                 })
-                .setContext(container)
+                .setContainer(container)
                 .build();
         getGame.execute();
 
@@ -94,9 +90,9 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
         switch (v.getId()) {
             case R.id.button_get_auth_code:
                 // TODO: Check it ends loading
-                authManager.getAuthCode(gameId, new AuthManager.AuthCodeCallback() {
+                AuthManager.getInstance().getAuthCode(gameId, new Callback<String>() {
                     @Override
-                    public void onGettingAuthCode(String authCode) {
+                    public void pass(String authCode) {
                         Intent intent = new Intent();
                         intent.putExtra(AUTH_CODE, authCode);
                         setResult(RESULT_OK, intent);

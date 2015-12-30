@@ -17,32 +17,31 @@ public class ImageHandler {
     private Picasso picasso;
     private Resources resources;
 
+    private ImageHandler(Context context) {
+        picasso = Picasso.with(context);
+        resources = context.getResources();
+    }
+
     public static void init(Context context) {
         if (singleton == null)
-            singleton = new ImageHandler();
-        singleton.picasso = Picasso.with(context);
-        singleton.resources = context.getResources();
+            singleton = new ImageHandler(context);
     }
 
-    public static RequestCreator load(String path) {
-        if (singleton == null) {
-            // TODO: Throw exception
-            return null;
-        }
-
-        return singleton.picasso.load(path);
+    public static ImageHandler getInstance() {
+        // TODO: Throw exception
+        if (singleton == null) return null;
+        return singleton;
     }
 
-    public static RequestCreator load(File file) {
-        if (singleton == null) {
-            // TODO: Throw exception
-            return null;
-        }
-
-        return singleton.picasso.load(file);
+    public RequestCreator load(String path) {
+        return picasso.load(path);
     }
 
-    public static int getColor(int resourceId) {
-        return singleton.resources.getColor(resourceId);
+    public RequestCreator load(File file) {
+        return picasso.load(file);
+    }
+
+    public int getColor(int resourceId) {
+        return resources.getColor(resourceId);
     }
 }

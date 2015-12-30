@@ -49,7 +49,7 @@ public class Game extends Response implements Target, TimelineOwner {
     }
 
     private RequestCreator getRequestCreator() {
-        return ImageHandler.load(RESTAPI.getURL() + "/games/" + _id + "/gameIcons");
+        return ImageHandler.getInstance().load(RESTAPI.getURL() + "/games/" + _id + "/gameIcons");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Game extends Response implements Target, TimelineOwner {
         Palette.Builder builder = Palette.from(bitmap);
         // Synchronously generate
         Palette palette = builder.generate();
-        int primaryColor = ImageHandler.getColor(R.color.colorPrimary);
+        int primaryColor = ImageHandler.getInstance().getColor(R.color.colorPrimary);
         int[] colors = { palette.getDarkMutedColor(primaryColor), palette.getLightMutedColor(primaryColor) };
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         listener.onCreateGradient(gradientDrawable);

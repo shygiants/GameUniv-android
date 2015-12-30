@@ -6,11 +6,13 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import kr.ac.korea.ee.shygiants.gameuniv.models.Game;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Moment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.TimelineOwner;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
+import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -191,39 +193,23 @@ public class ContentsStore {
     }
 
     private void getFeed() {
-        RESTAPI.Moments.getFeed(user.getEmail(), user.getAuthToken())
-        .enqueue(new Callback<ArrayList<Moment>>() {
-            @Override
-            public void onResponse(Response<ArrayList<Moment>> response, Retrofit retrofit) {
-                // HERE IS MAIN THREAD!
-                switch (response.code()) {
-                    case 401: // Unauthorized
-                        break;
-                    case 404: // Not Found
-                        break;
-                    case 500: // Server Error
-                        break;
-                    case 200:
+        Call<ArrayList<Moment>> task = RESTAPI.Moments.getFeed(user.getEmail(), user.getAuthToken());
+        NetworkTask<ArrayList<Moment>> getFeed = new NetworkTask.Builder<>(task)
+                .onSuccess(new NetworkTask.OnSuccessListener<ArrayList<Moment>>() {
+                    @Override
+                    public void onSuccess(ArrayList<Moment> responseBody) {
                         // TODO: Notify to all adapters
-                        feedStore = response.body();
+                        feedStore = responseBody;
                         for (RecyclerView.Adapter adapter : adapters)
                             adapter.notifyDataSetChanged();
                         if (swipe != null) {
                             swipe.setRefreshing(false);
                             swipe = null;
                         }
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                // HERE IS MAIN THREAD!
-                // TODO: Something wrong on network
-                // TODO: Ask user to retry
-                t.printStackTrace();
-            }
-        });
+                    }
+                })
+                .build();
+        getFeed.execute();
     }
 
     public static void initTimeline(TimelineOwner owner, RecyclerView.Adapter adapter) {

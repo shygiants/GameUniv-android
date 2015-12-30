@@ -66,7 +66,7 @@ import retrofit.Retrofit;
                             @Override
                             public void onSuccess(String responseBody) {
                                 // TODO: Notify to all users
-                                ImageHandler.load(profileFile).into(profile);
+                                ImageHandler.getInstance().load(profileFile).into(profile);
                             }
                         }) // TODO: Error Handling
                         .showSnackBar(false)
@@ -92,7 +92,7 @@ import retrofit.Retrofit;
     }
 
     private RequestCreator getRequestCreator() {
-        return ImageHandler.load(RESTAPI.getURL() + "/users/" + email + "/profilePhotos");
+        return ImageHandler.getInstance().load(RESTAPI.getURL() + "/users/" + email + "/profilePhotos");
     }
 
     @Override
@@ -110,7 +110,7 @@ import retrofit.Retrofit;
         Palette.Builder builder = Palette.from(bitmap);
         // Synchronously generate
         Palette palette = builder.generate();
-        int primaryColor = ImageHandler.getColor(R.color.colorPrimary);
+        int primaryColor = ImageHandler.getInstance().getColor(R.color.colorPrimary);
         int[] colors = { palette.getDarkMutedColor(primaryColor), palette.getLightMutedColor(primaryColor) };
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         listener.onCreateGradient(gradientDrawable);

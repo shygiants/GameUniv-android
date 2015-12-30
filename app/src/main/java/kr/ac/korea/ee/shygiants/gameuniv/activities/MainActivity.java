@@ -14,12 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import kr.ac.korea.ee.shygiants.gameuniv.R;
+import kr.ac.korea.ee.shygiants.gameuniv.app.GameUniv;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.GameListFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.fragments.NewsfeedFragment;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.AuthManager;
+import kr.ac.korea.ee.shygiants.gameuniv.utils.Callback;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ContentsStore;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.ImageHandler;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.OnCreateGradientListener;
@@ -28,13 +32,16 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.TransactionManager;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
-    private View profileArea;
-    private CircleImageView profilePhoto;
-    private TextView userNameText;
-    private TextView emailText;
-
-    private AuthManager authManager;
+    @Bind(R.id.profile_area)
+    View profileArea;
+    @Bind(R.id.profile_photo)
+    CircleImageView profilePhoto;
+    @Bind(R.id.user_name_text)
+    TextView userNameText;
+    @Bind(R.id.email_text)
+    TextView emailText;
 
     private NewsfeedFragment newsfeedFragment;
     private GameListFragment gameListFragment;
@@ -43,11 +50,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        ((GameUniv)getApplication()).setContainerView(drawer);
 
         newsfeedFragment = new NewsfeedFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, newsfeedFragment).commit();
-
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -58,23 +67,16 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        profileArea = findViewById(R.id.profile_area);
         profileArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TransactionManager.commitTransaction(ContentsStore.getUser(), getSupportFragmentManager());
             }
         });
-        profilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
-        userNameText = (TextView) findViewById(R.id.userNameTextView);
-        emailText = (TextView) findViewById(R.id.emailTextView);
 
-        ImageHandler.init(this);
-        authManager = AuthManager.initWithCustomCallback(this, new AuthManager.UserInfoCallback() {
+        AuthManager.getInstance().registerCallback(new Callback<User>() {
             @Override
-            public void onGettingUserInfo(User user) {
+            public void pass(User user) {
                 user.getProfilePhoto(profilePhoto);
                 user.getProfilePhotoGradient(new OnCreateGradientListener() {
                     @Override
@@ -86,6 +88,10 @@ public class MainActivity extends AppCompatActivity
                 emailText.setText(user.getEmail());
             }
         });
+    }
+
+    public View getContainerView() {
+        return drawer;
     }
 
     @Override

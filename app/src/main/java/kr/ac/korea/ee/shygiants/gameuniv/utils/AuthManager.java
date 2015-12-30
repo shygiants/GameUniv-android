@@ -6,6 +6,7 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,64 +14,65 @@ import android.util.Log;
 import java.io.IOException;
 
 import kr.ac.korea.ee.shygiants.gameuniv.R;
-import kr.ac.korea.ee.shygiants.gameuniv.activities.AuthorizationActivity;
+import kr.ac.korea.ee.shygiants.gameuniv.activities.MainActivity;
+import kr.ac.korea.ee.shygiants.gameuniv.app.GameUniv;
 import kr.ac.korea.ee.shygiants.gameuniv.models.Response;
 import kr.ac.korea.ee.shygiants.gameuniv.models.User;
 import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Retrofit;
 
 /**
  * Created by SHYBook_Air on 15. 11. 10..
  */
 public class AuthManager {
 
-    public interface UserInfoCallback {
-        void onGettingUserInfo(final User user);
-    }
-
-    public interface AuthCodeCallback {
-        void onGettingAuthCode(final String authCode);
-    }
+    private static AuthManager singleton;
 
     // Constants
-    private String ACCOUNT_TYPE;
-    private String FULL_ACCESS;
+    String ACCOUNT_TYPE;
+    String FULL_ACCESS;
 
     // Context
-    private Activity context;
-    private boolean loadContents;
+    private Context context;
     private AccountManager accountManager;
+    private Activity activity;
 
     // For getting user info
     private String email;
     private String authToken;
 
-    private UserInfoCallback userInfoCallback;
+    private Callback<User> userCallback;
     private User user;
 
-    public static AuthManager init(Activity context) {
-        return initWithCustomCallback(context, null);
-    }
-
-    public static AuthManager initWithCustomCallback(Activity context, UserInfoCallback customCallback) {
-        AuthManager ourInstance = new AuthManager();
-        ourInstance.context = context;
-        ourInstance.loadContents = !(context instanceof AuthorizationActivity);
-
-        ourInstance.ACCOUNT_TYPE = ourInstance.context.getString(R.string.auth_account_type);
-        ourInstance.FULL_ACCESS = ourInstance.context.getString(R.string.auth_full_access);
-
-        ourInstance.userInfoCallback = customCallback;
-
-        ourInstance.requestAuthToken();
-
-        return ourInstance;
-    }
-
-    private void requestAuthToken() {
+    private AuthManager(Context context) {
+        this.context = context;
+        ACCOUNT_TYPE = context.getString(R.string.auth_account_type);
+        FULL_ACCESS = context.getString(R.string.auth_full_access);
         accountManager = AccountManager.get(context);
-        accountManager.getAuthTokenByFeatures(ACCOUNT_TYPE, FULL_ACCESS, null, context, null, null,
+    }
+
+    public static void init(Context context) {
+        if (singleton == null) singleton = new AuthManager(context);
+    }
+
+    public static AuthManager getInstance() {
+        // TODO: Throw exception
+        if (singleton == null) return null;
+        return singleton;
+    }
+
+    public void registerCallback(Callback<User> userCallback) {
+        if (user != null) userCallback.pass(user);
+        else this.userCallback = userCallback;
+    }
+
+    public void requestAuthToken() {
+        if (activity != null) return;
+        activity = ((GameUniv)context.getApplicationContext()).getCurrentActivity();
+        getAuthToken();
+    }
+
+    private void getAuthToken() {
+        accountManager.getAuthTokenByFeatures(ACCOUNT_TYPE, FULL_ACCESS, null, activity, null, null,
                 new AccountManagerCallback<Bundle>() {
                     @Override
                     public void run(AccountManagerFuture<Bundle> future) {
@@ -106,11 +108,11 @@ public class AuthManager {
                     public void onSuccess(User responseBody) {
                         user = responseBody;
                         user.setAuthToken(authToken);
-                        if (loadContents)
+                        if (activity instanceof MainActivity)
                             ContentsStore.initFeed(user);
                         Log.i("AuthManager", "User is initialized");
-                        if (userInfoCallback != null)
-                            userInfoCallback.onGettingUserInfo(user);
+                        if (userCallback != null)
+                            userCallback.pass(user);
                     }
                 })
                 .showSnackBar(false)
@@ -118,23 +120,15 @@ public class AuthManager {
                     @Override
                     public void on(int statusCode, retrofit.Response<User> response) {
                         accountManager.invalidateAuthToken(ACCOUNT_TYPE, authToken);
-                        requestAuthToken();
+                        getAuthToken();
                     }
                 })
                 .build();
         getUser.execute();
     }
 
-    public void getUser(UserInfoCallback callback) {
-        // TODO: Sync with server
-        if (user != null)
-            callback.onGettingUserInfo(user);
-        else
-            userInfoCallback = callback;
-    }
-
-    public void getAuthCode(String gameId, final AuthCodeCallback callback) {
-        if (email == null || authToken == null) callback.onGettingAuthCode(null);
+    public void getAuthCode(String gameId, final Callback<String> callback) {
+        if (email == null || authToken == null) callback.pass(null);
 
         Call<Response> task = RESTAPI.Tokens.getAuthCode(email, authToken, gameId, "code");
         NetworkTask<Response> getAuthCode = new NetworkTask.Builder<>(task)
@@ -147,7 +141,7 @@ public class AuthManager {
                     @Override
                     public void on(int statusCode, retrofit.Response<Response> response) {
                         Uri location = Uri.parse(response.headers().get("Location"));
-                        callback.onGettingAuthCode(location.getQueryParameter("code"));
+                        callback.pass(location.getQueryParameter("code"));
                     }
                 })
                 .showSnackBar(false)

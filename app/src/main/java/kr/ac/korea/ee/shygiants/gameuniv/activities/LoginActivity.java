@@ -26,9 +26,7 @@ import kr.ac.korea.ee.shygiants.gameuniv.utils.NetworkTask;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.RESTAPI;
 import kr.ac.korea.ee.shygiants.gameuniv.utils.Regex;
 import retrofit.Call;
-import retrofit.Callback;
 import retrofit.Response;
-import retrofit.Retrofit;
 
 
 /**
@@ -160,7 +158,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                         }
                     })
                     .showSnackBar(false)
-                    .setContext(container)
+                    .setContainer(container)
                     .build();
             networkTask.execute();
         }
