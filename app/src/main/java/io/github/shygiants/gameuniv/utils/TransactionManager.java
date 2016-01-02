@@ -20,7 +20,7 @@ public class TransactionManager {
     private static Gson gson = new Gson();
 
     public static void commitTransaction(User user, FragmentManager manager) {
-        boolean isOwner = user.equals(ContentsStore.getUser());
+        boolean isOwner = user.equals(ContentsStore.getInstance().getUser());
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle arguments = new Bundle();
         arguments.putBoolean(ProfileFragment.IS_OWNER, isOwner);

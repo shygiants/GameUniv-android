@@ -33,7 +33,6 @@ public class NewsfeedFragment extends Fragment implements MomentHolder.OnMomentC
         super.onCreate(savedInstanceState);
 
         feedAdapter = new FeedAdapter(this);
-        ContentsStore.pushAdapter(feedAdapter);
     }
 
     @Nullable

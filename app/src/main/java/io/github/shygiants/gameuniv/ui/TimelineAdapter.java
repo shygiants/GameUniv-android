@@ -32,7 +32,7 @@ public class TimelineAdapter extends FragmentPagerAdapter {
 
                 Bundle arguments = new Bundle();
 
-                arguments.putBoolean(TimelineFragment.IS_OWNER, user.equals(ContentsStore.getUser()));
+                arguments.putBoolean(TimelineFragment.IS_OWNER, user.equals(ContentsStore.getInstance().getUser()));
                 Gson gson = new Gson();
                 arguments.putString(TimelineFragment.TIMELINE_USER, gson.toJson(user));
 

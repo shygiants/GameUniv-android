@@ -49,7 +49,7 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
         Bundle arguments = getArguments();
         Gson gson = new Gson();
         user = (isOwner = arguments.getBoolean(IS_OWNER))?
-                ContentsStore.getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
+                ContentsStore.getInstance().getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
 
         MainActivity activity = (MainActivity) getActivity();
         activity.disableNavigationView();

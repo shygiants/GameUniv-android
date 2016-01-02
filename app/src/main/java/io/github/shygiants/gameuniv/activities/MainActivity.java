@@ -53,26 +53,6 @@ public class MainActivity extends AppCompatActivity
 
         ((GameUniv)getApplication()).setContainerView(drawer);
 
-        newsfeedFragment = new NewsfeedFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, newsfeedFragment).commit();
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        profileArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TransactionManager.commitTransaction(ContentsStore.getUser(), getSupportFragmentManager());
-            }
-        });
-
         AuthManager.getInstance().registerCallback(new Callback<User>() {
             @Override
             public void pass(User user) {
@@ -85,8 +65,29 @@ public class MainActivity extends AppCompatActivity
                 });
                 userNameText.setText(user.getUserName());
                 emailText.setText(user.getEmail());
+                profileArea.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TransactionManager.commitTransaction(ContentsStore.getInstance().getUser(), getSupportFragmentManager());
+                    }
+                });
+
+                newsfeedFragment = new NewsfeedFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, newsfeedFragment).commit();
             }
         });
+
+
+
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
     }
 
     public View getContainerView() {

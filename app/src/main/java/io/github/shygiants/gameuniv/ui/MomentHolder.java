@@ -72,17 +72,7 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
         gameIcon.setOnClickListener(this);
     }
 
-    public void populate(int position) {
-        Moment moment = ContentsStore.getFeedElementAt(position);
-        populate(moment);
-    }
-
-    public void populate(TimelineOwner owner, int position) {
-        Moment moment = ContentsStore.getTimelineElementAt(owner, position);
-        populate(moment);
-    }
-
-    private void populate(Moment moment) {
+    public void populate(Moment moment) {
         this.moment = moment;
         moment.getAuthor().getProfilePhoto(profilePhoto);
         moment.getGame().getGameIcon(gameIcon);

@@ -11,6 +11,7 @@ import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.Moment;
 import io.github.shygiants.gameuniv.models.TimelineOwner;
 import io.github.shygiants.gameuniv.utils.ContentsStore;
+import io.github.shygiants.gameuniv.utils.Feed;
 
 /**
  * Created by SHYBook_Air on 15. 11. 19..
@@ -21,18 +22,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private static final String TIMELINE = "TIMELINE";
 
     private String context;
-    private TimelineOwner owner;
+    private Feed feed;
     private MomentHolder.OnMomentClickListener listener;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public FeedAdapter(TimelineOwner owner, MomentHolder.OnMomentClickListener listener) {
         context = TIMELINE;
-        this.owner = owner;
+        feed = ContentsStore.getInstance().getTimeline(owner);
+        feed.pushAdapter(this);
         this.listener = listener;
     }
 
     public FeedAdapter(MomentHolder.OnMomentClickListener listener) {
         context = NEWSFEED;
+        feed = ContentsStore.getInstance().getFeed();
+        feed.pushAdapter(this);
         this.listener = listener;
     }
 
@@ -47,31 +51,24 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public void onRefresh() {
-        if (isTimeline())
-            ContentsStore.refreshTimeline(owner, swipeRefreshLayout);
-        else
-            ContentsStore.refresh(swipeRefreshLayout);
+        feed.refresh(swipeRefreshLayout);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // Populate view
         MomentHolder momentHolder = (MomentHolder) holder;
-        if (isTimeline()) momentHolder.populate(owner, position);
-        else momentHolder.populate(position);
+        momentHolder.populate(feed.getFeedElementAt(position));
     }
 
     @Override
     public int getItemCount() {
-        return (isTimeline())?
-                ContentsStore.getTimelineElementsCount(owner) : ContentsStore.getFeedElementsCount();
+        return feed.getFeedElementsCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return (isTimeline())?
-                ContentsStore.getTimelineElementAt(owner, position).getViewType() :
-                ContentsStore.getFeedElementAt(position).getViewType();
+        return feed.getFeedElementAt(position).getViewType();
     }
 
     @Override
@@ -105,5 +102,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         container.addView(inflater.inflate(resourceId, null, false), 1);
 
         return new MomentHolder(momentView, viewType, listener);
+    }
+
+    public void destroy() {
+        feed.removeAdapter(this);
     }
 }

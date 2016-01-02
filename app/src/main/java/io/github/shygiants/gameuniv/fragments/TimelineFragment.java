@@ -38,10 +38,9 @@ public class TimelineFragment extends Fragment implements MomentHolder.OnMomentC
         Bundle arguments = getArguments();
         Gson gson = new Gson();
         user = (arguments.getBoolean(IS_OWNER))?
-                ContentsStore.getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
+                ContentsStore.getInstance().getUser() : gson.fromJson(arguments.getString(TIMELINE_USER), User.class);
 
         timelineAdapter = new FeedAdapter(user, this);
-        ContentsStore.initTimeline(user, timelineAdapter);
     }
 
     @Nullable
@@ -58,7 +57,7 @@ public class TimelineFragment extends Fragment implements MomentHolder.OnMomentC
 
     @Override
     public void onDestroy() {
-        ContentsStore.removeTimelineAdapter(user, timelineAdapter);
+        timelineAdapter.destroy();
         super.onDestroy();
     }
 

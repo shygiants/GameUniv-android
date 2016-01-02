@@ -51,7 +51,6 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
         activity.disableNavigationView();
 
         timelineAdapter = new FeedAdapter(game, this);
-        ContentsStore.initTimeline(game, timelineAdapter);
     }
 
     @Nullable
@@ -93,7 +92,7 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
 
     @Override
     public void onDestroy() {
-        ContentsStore.removeTimelineAdapter(game, timelineAdapter);
+        timelineAdapter.destroy();
         super.onDestroy();
     }
 

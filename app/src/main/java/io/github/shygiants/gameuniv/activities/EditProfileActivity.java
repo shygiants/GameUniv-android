@@ -30,7 +30,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        user = ContentsStore.getUser();
+        user = ContentsStore.getInstance().getUser();
 
         profilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
         profilePhoto.setOnClickListener(this);
