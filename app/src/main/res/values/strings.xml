@@ -41,6 +41,9 @@
     <string name="follow_button">팔로우</string>
     <string name="edit_profile_button">프로필 편집</string>
 
+    <!--&#8230; means ellipsis(...)-->
+    <string name="write_content">글쓰기&#8230;</string>
+
     <string name="snack_bar_server_err">서버 문제</string>
     <string name="snack_bar_connection_err">인터넷 연결 문제</string>
     <string name="snack_bar_action">다시 시도</string>

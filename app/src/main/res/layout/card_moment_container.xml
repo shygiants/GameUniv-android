@@ -6,10 +6,7 @@
     android:layout_height="match_parent"
     card_view:cardCornerRadius="@dimen/card_corner_radius"
     card_view:cardElevation="@dimen/card_elevation"
-    android:layout_marginTop="@dimen/card_margin"
-    android:layout_marginLeft="@dimen/card_margin"
-    android:layout_marginRight="@dimen/card_margin"
-    >
+    android:layout_marginTop="@dimen/card_margin">
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package io.github.shygiants.gameuniv.fragments;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,13 @@ import com.google.gson.Gson;
 
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.activities.MainActivity;
+import io.github.shygiants.gameuniv.activities.PhotoPickerActivity;
 import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.models.User;
 import io.github.shygiants.gameuniv.ui.FeedAdapter;
+import io.github.shygiants.gameuniv.ui.GameFeedAdapter;
 import io.github.shygiants.gameuniv.ui.MomentHolder;
+import io.github.shygiants.gameuniv.ui.PostContentHolder;
 import io.github.shygiants.gameuniv.utils.ContentsStore;
 import io.github.shygiants.gameuniv.utils.OnCreateGradientListener;
 import io.github.shygiants.gameuniv.utils.TransactionManager;
@@ -30,12 +35,13 @@ import io.github.shygiants.gameuniv.utils.TransactionManager;
 /**
  * Created by SHYBook_Air on 15. 12. 3..
  */
-public class GameFragment extends Fragment implements MomentHolder.OnMomentClickListener {
+public class GameFragment extends Fragment implements PostContentHolder.PostContentClickListener {
 
+    public static final int REQ_PICK_PHOTOS = 1;
     public static final String GAME = "Game";
 
     private RecyclerView timelineView;
-    private FeedAdapter timelineAdapter;
+    private GameFeedAdapter timelineAdapter;
 
     private Game game;
 
@@ -50,7 +56,7 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
         MainActivity activity = (MainActivity) getActivity();
         activity.disableNavigationView();
 
-        timelineAdapter = new FeedAdapter(game, this);
+        timelineAdapter = new GameFeedAdapter(game, this);
     }
 
     @Nullable
@@ -104,5 +110,18 @@ public class GameFragment extends Fragment implements MomentHolder.OnMomentClick
     @Override
     public void onGameClick(Game game) {
         // DO NOTHING
+    }
+
+    @Override
+    public void onClickAddPhotos() {
+        Intent intent = new Intent(getActivity(), PhotoPickerActivity.class);
+        startActivityForResult(intent, REQ_PICK_PHOTOS);
+
+        // TODO: Handle activity result
+    }
+
+    @Override
+    public void onClickWriteText() {
+        // TODO: Handle
     }
 }

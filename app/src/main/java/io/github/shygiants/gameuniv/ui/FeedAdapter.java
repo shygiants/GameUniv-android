@@ -73,16 +73,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Determine layout
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        View momentView = inflater.inflate(R.layout.card_moment_container, parent, false);
-
-        LinearLayout container = (LinearLayout) momentView.findViewById(R.id.container);
-
         int resourceId;
         switch (viewType) {
-            // TODO: Handle achievement moments
             case Moment.TEXT:
                 resourceId = R.layout.card_moment_text;
                 break;
@@ -99,6 +91,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 resourceId = R.layout.card_moment_text;
                 break;
         }
+        // Determine layout
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View momentView = inflater.inflate(R.layout.card_moment_container, parent, false);
+        LinearLayout container = (LinearLayout) momentView.findViewById(R.id.container);
+
         container.addView(inflater.inflate(resourceId, null, false), 1);
 
         return new MomentHolder(momentView, viewType, listener);
