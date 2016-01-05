@@ -27,6 +27,7 @@ public class PhotoLoader extends AsyncTaskLoader<List<Photo>> {
 
         String[] projection = { MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Thumbnails.IMAGE_ID };
 
+        // TODO: Order to time
         Cursor thumbnailCursor = context.getContentResolver().query(
                 MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
                 projection, // Which columns to return

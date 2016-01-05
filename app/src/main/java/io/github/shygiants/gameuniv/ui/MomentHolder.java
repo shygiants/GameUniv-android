@@ -1,19 +1,20 @@
 package io.github.shygiants.gameuniv.ui;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.Achievement;
 import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.models.Moment;
-import io.github.shygiants.gameuniv.models.TimelineOwner;
 import io.github.shygiants.gameuniv.models.User;
-import io.github.shygiants.gameuniv.utils.ContentsStore;
 
 /**
  * Created by SHYBook_Air on 15. 11. 19..
@@ -27,51 +28,50 @@ public class MomentHolder extends RecyclerView.ViewHolder implements View.OnClic
 
     CardView cardView;
 
+    // Common
+    @Bind(R.id.author)
     TextView authorText;
+    @Bind(R.id.created_at)
     TextView timestampText;
+    @Bind(R.id.profile_photo)
+    CircleImageView profilePhoto;
+    @Bind(R.id.game_icon)
+    ImageView gameIcon;
+
+    // For image, score and text
+    @Nullable @Bind(R.id.content)
     TextView contentText;
 
+    // For image
+    @Nullable @Bind(R.id.image)
     ImageView image;
 
+    // For achievement
+    @Nullable @Bind(R.id.title)
     TextView titleText;
+    @Nullable @Bind(R.id.description)
     TextView descText;
+    @Nullable @Bind(R.id.point)
     TextView pointText;
 
-    CircleImageView profilePhoto;
-    ImageView gameIcon;
+
 
     OnMomentClickListener listener;
     Moment moment;
 
-    public MomentHolder(View view, int viewType, OnMomentClickListener listener) {
+    public MomentHolder(View view, OnMomentClickListener listener) {
         super(view);
         this.listener = listener;
+        ButterKnife.bind(this, view);
 
         cardView = (CardView) view;
 
-        profilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
         profilePhoto.setOnClickListener(this);
-        authorText = (TextView) view.findViewById(R.id.author);
         authorText.setOnClickListener(this);
-        timestampText = (TextView) view.findViewById(R.id.created_at);
-
-        switch (viewType) {
-            case Moment.ACHIEVEMENT:
-                titleText = (TextView) view.findViewById(R.id.title);
-                descText = (TextView) view.findViewById(R.id.description);
-                pointText = (TextView) view.findViewById(R.id.point);
-                break;
-            case Moment.IMAGE:
-                image = (ImageView) view.findViewById(R.id.image);
-            default:
-                contentText = (TextView) view.findViewById(R.id.content);
-                break;
-        }
-
-        gameIcon = (ImageView) view.findViewById(R.id.game_icon);
         gameIcon.setOnClickListener(this);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void populate(Moment moment) {
         this.moment = moment;
         moment.getAuthor().getProfilePhoto(profilePhoto);

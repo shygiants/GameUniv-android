@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.activities.MainActivity;
 import io.github.shygiants.gameuniv.models.Game;
@@ -25,7 +27,8 @@ import io.github.shygiants.gameuniv.utils.TransactionManager;
  */
 public class GameListFragment extends Fragment implements GameHolder.OnGameClickListener {
 
-    private RecyclerView gameList;
+    @Bind(R.id.game_list)
+    RecyclerView gameList;
     private GameListAdapter gameAdapter;
 
     @Override
@@ -40,16 +43,16 @@ public class GameListFragment extends Fragment implements GameHolder.OnGameClick
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game_list, container, false);
+        ButterKnife.bind(this, view);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Toolbar toolbar = ButterKnife.findById(view, R.id.toolbar);
         MainActivity activity = (MainActivity)getActivity();
         activity.setSupportActionBar(toolbar);
         activity.initNavigationView(toolbar);
 
-        SwipeRefreshLayout swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
+        SwipeRefreshLayout swipe = ButterKnife.findById(view, R.id.swipe);
         gameAdapter.setSwipeRefreshLayout(swipe);
 
-        gameList = (RecyclerView) view.findViewById(R.id.game_list);
         gameList.setLayoutManager(new GridLayoutManager(null, 3, LinearLayoutManager.VERTICAL, false));
         gameList.setAdapter(gameAdapter);
 

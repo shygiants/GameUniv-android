@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.utils.ContentsStore;
@@ -26,13 +27,13 @@ public class PostContentHolder extends RecyclerView.ViewHolder implements View.O
 
         this.listener = listener;
 
-        CircleImageView profilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
+        CircleImageView profilePhoto = ButterKnife.findById(view, R.id.profile_photo);
         ContentsStore.getInstance().getUser().getProfilePhoto(profilePhoto);
 
-        ImageButton addPhotoButton = (ImageButton) view.findViewById(R.id.add_photo_button);
+        ImageButton addPhotoButton = ButterKnife.findById(view, R.id.add_photo_button);
         addPhotoButton.setOnClickListener(this);
 
-        TextView writeContentText = (TextView) view.findViewById(R.id.write_content_text);
+        TextView writeContentText = ButterKnife.findById(view, R.id.write_content_text);
         writeContentText.setOnClickListener(this);
     }
 

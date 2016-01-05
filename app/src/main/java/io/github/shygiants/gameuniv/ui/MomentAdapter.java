@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.Moment;
 import io.github.shygiants.gameuniv.models.TimelineOwner;
@@ -16,32 +17,24 @@ import io.github.shygiants.gameuniv.utils.Feed;
 /**
  * Created by SHYBook_Air on 15. 11. 19..
  */
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
+public class MomentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String NEWSFEED = "NEWSFEED";
-    private static final String TIMELINE = "TIMELINE";
-
-    private String context;
     private Feed feed;
     private MomentHolder.OnMomentClickListener listener;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public FeedAdapter(TimelineOwner owner, MomentHolder.OnMomentClickListener listener) {
-        context = TIMELINE;
-        feed = ContentsStore.getInstance().getTimeline(owner);
-        feed.pushAdapter(this);
-        this.listener = listener;
+    public MomentAdapter(MomentHolder.OnMomentClickListener listener) {
+        this(ContentsStore.getInstance().getFeed(), listener);
     }
 
-    public FeedAdapter(MomentHolder.OnMomentClickListener listener) {
-        context = NEWSFEED;
-        feed = ContentsStore.getInstance().getFeed();
-        feed.pushAdapter(this);
-        this.listener = listener;
+    public MomentAdapter(TimelineOwner owner, MomentHolder.OnMomentClickListener listener) {
+        this(ContentsStore.getInstance().getTimeline(owner), listener);
     }
 
-    private boolean isTimeline() {
-        return context.equals(TIMELINE);
+    private MomentAdapter(Feed feed, MomentHolder.OnMomentClickListener listener) {
+        this.feed = feed;
+        feed.pushAdapter(this);
+        this.listener = listener;
     }
 
     public void setSwipeRefreshLayout(SwipeRefreshLayout swipe) {
@@ -94,11 +87,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         // Determine layout
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View momentView = inflater.inflate(R.layout.card_moment_container, parent, false);
-        LinearLayout container = (LinearLayout) momentView.findViewById(R.id.container);
+        LinearLayout container = ButterKnife.findById(momentView, R.id.container);
 
         container.addView(inflater.inflate(resourceId, null, false), 1);
 
-        return new MomentHolder(momentView, viewType, listener);
+        return new MomentHolder(momentView, listener);
     }
 
     public void destroy() {

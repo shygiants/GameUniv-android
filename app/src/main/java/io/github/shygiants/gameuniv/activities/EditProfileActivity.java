@@ -12,6 +12,8 @@ import android.view.View;
 
 import java.io.File;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.User;
@@ -23,16 +25,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private User user;
 
+    @Bind(R.id.profile_photo)
     CircleImageView profilePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        ButterKnife.bind(this);
 
         user = ContentsStore.getInstance().getUser();
 
-        profilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
         profilePhoto.setOnClickListener(this);
         user.getProfilePhoto(profilePhoto);
     }

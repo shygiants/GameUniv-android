@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +18,15 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.activities.MainActivity;
 import io.github.shygiants.gameuniv.activities.PhotoPickerActivity;
 import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.models.User;
-import io.github.shygiants.gameuniv.ui.FeedAdapter;
 import io.github.shygiants.gameuniv.ui.GameFeedAdapter;
-import io.github.shygiants.gameuniv.ui.MomentHolder;
 import io.github.shygiants.gameuniv.ui.PostContentHolder;
-import io.github.shygiants.gameuniv.utils.ContentsStore;
 import io.github.shygiants.gameuniv.utils.OnCreateGradientListener;
 import io.github.shygiants.gameuniv.utils.TransactionManager;
 
@@ -40,7 +38,9 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
     public static final int REQ_PICK_PHOTOS = 1;
     public static final String GAME = "Game";
 
-    private RecyclerView timelineView;
+    @Bind(R.id.timeline)
+    RecyclerView timelineView;
+
     private GameFeedAdapter timelineAdapter;
 
     private Game game;
@@ -63,18 +63,19 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
+        ButterKnife.bind(this, view);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Toolbar toolbar = ButterKnife.findById(view, R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.toolbar_layout);
+        CollapsingToolbarLayout toolBarLayout = ButterKnife.findById(view, R.id.toolbar_layout);
         toolBarLayout.setTitle(game.getGameName());
 
-        final View gameArea = view.findViewById(R.id.game_area);
-        ImageView gameIcon = (ImageView) view.findViewById(R.id.game_icon);
+        final View gameArea = ButterKnife.findById(view, R.id.game_area);
+        ImageView gameIcon = ButterKnife.findById(view, R.id.game_icon);
         game.getGameIcon(gameIcon);
         game.getGameIconGradient(new OnCreateGradientListener() {
             @Override
@@ -83,13 +84,12 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
             }
         });
 
-        TextView gameNameText = (TextView) view.findViewById(R.id.game_name_text);
+        TextView gameNameText = ButterKnife.findById(view, R.id.game_name_text);
         gameNameText.setText(game.getGameName());
 
 //        SwipeRefreshLayout swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
 //        timelineAdapter.setSwipeRefreshLayout(swipe);
 
-        timelineView = (RecyclerView) view.findViewById(R.id.timeline);
         timelineView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
         timelineView.setAdapter(timelineAdapter);
 

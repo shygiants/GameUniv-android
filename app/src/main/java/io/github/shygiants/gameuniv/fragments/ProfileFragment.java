@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.activities.EditProfileActivity;
 import io.github.shygiants.gameuniv.activities.MainActivity;
@@ -38,7 +40,8 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
 
     private User user;
 
-    private ViewPager viewPager;
+    @Bind(R.id.view_pager)
+    ViewPager viewPager;
 
     // TODO: When destroying this fragment, delete timeline resource
 
@@ -59,34 +62,34 @@ public class ProfileFragment extends Fragment implements TabLayout.OnTabSelected
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        ButterKnife.bind(this, view);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Toolbar toolbar = ButterKnife.findById(view, R.id.toolbar);
         MainActivity activity = (MainActivity)getActivity();
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.toolbar_layout);
+        CollapsingToolbarLayout toolBarLayout = ButterKnife.findById(view, R.id.toolbar_layout);
         toolBarLayout.setTitle(user.getUserName());
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        TabLayout tabLayout = ButterKnife.findById(view, R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.profile_tab_timeline)));
 
-        viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         viewPager.setAdapter(new TimelineAdapter(user, getChildFragmentManager()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(this);
 
-        TextView userNameText = (TextView) view.findViewById(R.id.user_name_text);
+        TextView userNameText = ButterKnife.findById(view, R.id.user_name_text);
         userNameText.setText(user.getUserName());
 
         int resId = (isOwner)?
                 R.string.edit_profile_button : R.string.follow_button;
-        Button button = (Button) view.findViewById(R.id.button);
+        Button button = ButterKnife.findById(view, R.id.button);
         button.setText(activity.getString(resId));
         button.setOnClickListener(this);
 
-        final View profileArea = view.findViewById(R.id.profile_area);
-        ImageView userProfile = (ImageView) view.findViewById(R.id.user_profile);
+        final View profileArea = ButterKnife.findById(view, R.id.profile_area);
+        ImageView userProfile = ButterKnife.findById(view, R.id.user_profile);
         user.getProfilePhoto(userProfile);
         user.getProfilePhotoGradient(new OnCreateGradientListener() {
             @Override

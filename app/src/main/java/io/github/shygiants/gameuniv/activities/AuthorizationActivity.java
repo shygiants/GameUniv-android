@@ -37,6 +37,8 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
     View container;
     @Bind(R.id.informing_text)
     TextView informingText;
+    @Bind(R.id.game_icon)
+    ImageView gameIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,6 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
                     @Override
                     public void onSuccess(Game response) {
                         game = response;
-                        ImageView gameIcon = (ImageView) findViewById(R.id.game_icon);
                         game.getGameIcon(gameIcon);
                         String msg = String.format(getString(R.string.auth_message), game.getGameName());
                         informingText.setText(msg);
@@ -78,11 +79,11 @@ public class AuthorizationActivity extends AppCompatActivity implements View.OnC
                 .build();
         getGame.execute();
 
-        CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
+        CircleImageView userProfile = ButterKnife.findById(this, R.id.user_profile);
         user.getProfilePhoto(userProfile);
 
-        findViewById(R.id.button_get_auth_code).setOnClickListener(this);
-        findViewById(R.id.button_reject).setOnClickListener(this);
+        ButterKnife.findById(this, R.id.button_get_auth_code).setOnClickListener(this);
+        ButterKnife.findById(this, R.id.button_reject).setOnClickListener(this);
     }
 
     @Override

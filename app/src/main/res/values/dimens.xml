@@ -29,6 +29,9 @@
 
     <dimen name="icon_size">24dp</dimen>
 
+    <dimen name="photo_margin">3dp</dimen>
+    <dimen name="photo_padding">3dp</dimen>
+
     <!--Typography-->
     <dimen name="typo_headline">24sp</dimen>
     <dimen name="typo_title">20sp</dimen>

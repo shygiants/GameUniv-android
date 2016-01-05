@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.utils.ContentsStore;
@@ -20,17 +22,19 @@ public class GameHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     private OnGameClickListener listener;
 
-    private ImageView gameIcon;
-    private TextView gameTitle;
+    @Bind(R.id.game_icon)
+    ImageView gameIcon;
+    @Bind(R.id.game_title)
+    TextView gameTitle;
+
     private Game game;
 
     public GameHolder(View view, OnGameClickListener listener) {
         super(view);
+        ButterKnife.bind(this, view);
         this.listener = listener;
 
         view.setOnClickListener(this);
-        gameIcon = (ImageView) view.findViewById(R.id.game_icon);
-        gameTitle = (TextView) view.findViewById(R.id.game_title);
     }
 
     public void populate(int position) {

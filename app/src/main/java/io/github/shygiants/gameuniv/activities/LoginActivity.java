@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.AuthToken;
 import io.github.shygiants.gameuniv.models.RequestBody;
@@ -35,11 +37,16 @@ import retrofit.Response;
 public class LoginActivity extends AccountAuthenticatorActivity {
 
     // UI references.
-    private View container;
-    private EditText mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    @Bind(R.id.container)
+    View container;
+    @Bind(R.id.email)
+    EditText mEmailView;
+    @Bind(R.id.password)
+    EditText mPasswordView;
+    @Bind(R.id.login_form)
+    View mProgressView;
+    @Bind(R.id.login_progress)
+    View mLoginFormView;
 
     // Intent arg keys
     public static final String ACCOUNT_TYPE = "ACCOUNT_TYPE";
@@ -63,11 +70,9 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
 
         setContentView(R.layout.activity_login);
-        container = findViewById(R.id.container);
+        ButterKnife.bind(this);
         // Set up the login form.
-        mEmailView = (EditText) findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -79,16 +84,13 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = ButterKnife.findById(this, R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     @Override

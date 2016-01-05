@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.models.TimelineOwner;
+import io.github.shygiants.gameuniv.utils.ContentsStore;
 
 /**
  * Created by SHYBook_Air on 2016. 1. 4..
  */
-public class GameFeedAdapter extends FeedAdapter {
+public final class GameFeedAdapter extends MomentAdapter {
 
     public static final int POST_CONTENT = -1;
 

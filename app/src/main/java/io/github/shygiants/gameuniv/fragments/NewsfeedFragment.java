@@ -11,13 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.activities.MainActivity;
 import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.models.User;
-import io.github.shygiants.gameuniv.ui.FeedAdapter;
+import io.github.shygiants.gameuniv.ui.MomentAdapter;
 import io.github.shygiants.gameuniv.ui.MomentHolder;
-import io.github.shygiants.gameuniv.utils.ContentsStore;
 import io.github.shygiants.gameuniv.utils.TransactionManager;
 
 /**
@@ -25,32 +26,33 @@ import io.github.shygiants.gameuniv.utils.TransactionManager;
  */
 public class NewsfeedFragment extends Fragment implements MomentHolder.OnMomentClickListener {
 
-    private RecyclerView feedView;
-    private FeedAdapter feedAdapter;
+    @Bind(R.id.feed)
+    RecyclerView feedView;
+    private MomentAdapter momentAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        feedAdapter = new FeedAdapter(this);
+        momentAdapter = new MomentAdapter(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newsfeed, container, false);
+        ButterKnife.bind(this, view);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Toolbar toolbar = ButterKnife.findById(view, R.id.toolbar);
         MainActivity activity = (MainActivity)getActivity();
         activity.setSupportActionBar(toolbar);
         activity.initNavigationView(toolbar);
 
-        SwipeRefreshLayout swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
-        feedAdapter.setSwipeRefreshLayout(swipe);
+        SwipeRefreshLayout swipe = ButterKnife.findById(view, R.id.swipe);
+        momentAdapter.setSwipeRefreshLayout(swipe);
 
-        feedView = (RecyclerView) view.findViewById(R.id.feed);
         feedView.setLayoutManager(new LinearLayoutManager(null, LinearLayoutManager.VERTICAL, false));
-        feedView.setAdapter(feedAdapter);
+        feedView.setAdapter(momentAdapter);
 
         return view;
     }
