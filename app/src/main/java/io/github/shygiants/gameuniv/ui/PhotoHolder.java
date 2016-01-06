@@ -16,6 +16,11 @@ import io.github.shygiants.gameuniv.utils.Photo;
  */
 public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+    public interface OnPhotoPickListener {
+        void onSelect(PhotoHolder photoHolder);
+        void onDeselect(PhotoHolder photoHolder);
+    }
+
     @Bind(R.id.photo)
     ImageView photoView;
     @Bind(R.id.square)
@@ -24,19 +29,26 @@ public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClick
     TextView orderText;
 
     private boolean isSelected = false;
-    private PhotoPickerActivity activity;
 
-    public PhotoHolder(View view, PhotoPickerActivity activity) {
+    private Photo photo;
+    private OnPhotoPickListener listener;
+
+    public PhotoHolder(View view, OnPhotoPickListener listener) {
         super(view);
         ButterKnife.bind(this, view);
 
         view.setOnClickListener(this);
 
-        this.activity = activity;
+        this.listener = listener;
     }
 
     public void setPhoto(Photo photo) {
+        this.photo = photo;
         photoView.setImageURI(photo.getThumbnailUri());
+    }
+
+    public Photo getPhoto() {
+        return photo;
     }
 
     public void setOrder(int order) {
@@ -55,7 +67,10 @@ public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClick
     private void setSelected(boolean select) {
         isSelected = select;
 
-        activity.onSelect(this, isSelected);
+        if (isSelected)
+            listener.onSelect(this);
+        else
+            listener.onDeselect(this);
 
         int visibility = (isSelected)? View.VISIBLE : View.INVISIBLE;
         square.setVisibility(visibility);
