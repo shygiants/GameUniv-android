@@ -1,8 +1,10 @@
 package io.github.shygiants.gameuniv.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,7 @@ import io.github.shygiants.gameuniv.models.User;
 import io.github.shygiants.gameuniv.ui.GameFeedAdapter;
 import io.github.shygiants.gameuniv.ui.PostContentHolder;
 import io.github.shygiants.gameuniv.utils.OnCreateGradientListener;
+import io.github.shygiants.gameuniv.utils.Photo;
 import io.github.shygiants.gameuniv.utils.TransactionManager;
 
 /**
@@ -123,5 +127,18 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
     @Override
     public void onClickWriteText() {
         // TODO: Handle
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQ_PICK_PHOTOS && resultCode == Activity.RESULT_OK) {
+            Parcelable[] photosPicked = data.getParcelableArrayExtra(PhotoPickerActivity.PICKED_PHOTOS);
+
+            for (Parcelable photo : photosPicked) {
+                Log.i("GameFragment", ((Photo) photo).getImageUri().toString());
+            }
+        }
     }
 }

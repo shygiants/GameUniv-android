@@ -33,13 +33,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>
         this.activity = activity;
     }
 
-    public List<Photo> getPicked() {
-        List<Photo> picked = new ArrayList<>();
+    public Photo[] getPicked() {
+        Photo[] photos = new Photo[selected.size()];
+
+        int i = 0;
         for (PhotoHolder photoHolder : selected) {
-            picked.add(photoHolder.getPhoto());
+            photos[i] = photoHolder.getPhoto();
+            i++;
         }
 
-        return picked;
+        return photos;
     }
 
     @Override

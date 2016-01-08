@@ -1,5 +1,6 @@
 package io.github.shygiants.gameuniv.activities;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import io.github.shygiants.gameuniv.ui.PhotoAdapter;
 import io.github.shygiants.gameuniv.utils.ImageHandler;
 
 public class PhotoPickerActivity extends AppCompatActivity {
+
+    public static final String PICKED_PHOTOS = "Picked Photos";
 
     private PhotoAdapter photoAdapter;
     private MenuItem confirmIcon;
@@ -45,7 +48,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
         confirmIcon.setEnabled(false);
         Drawable iconDrawable = confirmIcon.getIcon();
         iconDrawable.setTint(ImageHandler.getInstance().getColor(R.color.colorWhite));
-        iconDrawable.setAlpha((int)(255 * 0.3));
+        iconDrawable.setAlpha((int) (255 * 0.3));
 
         return true;
     }
@@ -55,8 +58,14 @@ public class PhotoPickerActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.confirm) {
+
+            Intent intent = new Intent();
+            intent.putExtra(PICKED_PHOTOS, photoAdapter.getPicked());
+            setResult(RESULT_OK, intent);
+            finish();
             return true;
         } else if (id == android.R.id.home) {
+            setResult(RESULT_CANCELED);
             finish();
             return true;
         }
