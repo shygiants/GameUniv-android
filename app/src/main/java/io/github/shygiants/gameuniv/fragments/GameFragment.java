@@ -1,10 +1,8 @@
 package io.github.shygiants.gameuniv.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +21,13 @@ import com.google.gson.Gson;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
+import io.github.shygiants.gameuniv.activities.PostContentsActivity;
 import io.github.shygiants.gameuniv.activities.MainActivity;
-import io.github.shygiants.gameuniv.activities.PhotoPickerActivity;
 import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.models.User;
 import io.github.shygiants.gameuniv.ui.GameFeedAdapter;
 import io.github.shygiants.gameuniv.ui.PostContentHolder;
 import io.github.shygiants.gameuniv.utils.OnCreateGradientListener;
-import io.github.shygiants.gameuniv.utils.Photo;
 import io.github.shygiants.gameuniv.utils.TransactionManager;
 
 /**
@@ -39,7 +35,6 @@ import io.github.shygiants.gameuniv.utils.TransactionManager;
  */
 public class GameFragment extends Fragment implements PostContentHolder.PostContentClickListener {
 
-    public static final int REQ_PICK_PHOTOS = 1;
     public static final String GAME = "Game";
 
     @Bind(R.id.timeline)
@@ -118,8 +113,8 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
 
     @Override
     public void onClickAddPhotos() {
-        Intent intent = new Intent(getActivity(), PhotoPickerActivity.class);
-        startActivityForResult(intent, REQ_PICK_PHOTOS);
+        Intent intent = new Intent(getActivity(), PostContentsActivity.class);
+        startActivityForResult(intent, PostContentsActivity.REQ_PICK_PHOTOS);
 
         // TODO: Handle activity result
     }
@@ -127,18 +122,5 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
     @Override
     public void onClickWriteText() {
         // TODO: Handle
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQ_PICK_PHOTOS && resultCode == Activity.RESULT_OK) {
-            Parcelable[] photosPicked = data.getParcelableArrayExtra(PhotoPickerActivity.PICKED_PHOTOS);
-
-            for (Parcelable photo : photosPicked) {
-                Log.i("GameFragment", ((Photo) photo).getImageUri().toString());
-            }
-        }
     }
 }

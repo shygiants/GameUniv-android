@@ -60,7 +60,15 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <activity android:name=".activities.PhotoPickerActivity"></activity>
+        <activity
+            android:name=".activities.PhotoPickerActivity"
+            android:label="@string/camera_roll"
+            android:screenOrientation="portrait"  />
+        <activity
+            android:name=".activities.PostContentsActivity"
+            android:label="@string/title_activity_contents"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

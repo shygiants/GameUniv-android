@@ -7,8 +7,11 @@
     <color name="colorScore">#FFD600</color>
     <color name="colorBlack54">#8A000000</color>
     <color name="colorBlack87">#DF000000</color>
+    <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFFFF</color>
+    <color name="colorWhite30">#4DFFFFFF</color>
 
     <color name="transparent">#00000000</color>
+    <color name="colorDimming">#B3000000</color>
 
 </resources>

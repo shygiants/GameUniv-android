@@ -1,0 +1,28 @@
+<RelativeLayout
+    android:id="@+id/background"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorBlack"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".activities.PostContentsActivity">
+
+    <ImageView
+        android:id="@+id/content_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"/>
+    <EditText
+        android:id="@+id/content_text"
+        android:textColor="@color/colorWhite"
+        android:hint="TEST"
+        android:textColorHint="@color/colorWhite30"
+        android:background="@null"
+        android:padding="@dimen/contents_text_padding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom|left"/>
+
+</RelativeLayout>
