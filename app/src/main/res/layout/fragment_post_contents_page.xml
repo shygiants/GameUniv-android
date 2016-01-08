@@ -17,12 +17,13 @@
     <EditText
         android:id="@+id/content_text"
         android:textColor="@color/colorWhite"
-        android:hint="TEST"
+        android:hint="@string/contents_image_desc_hint"
         android:textColorHint="@color/colorWhite30"
-        android:background="@null"
+        android:background="@drawable/background_contents_text"
         android:padding="@dimen/contents_text_padding"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="bottom|left"/>
 
 </RelativeLayout>

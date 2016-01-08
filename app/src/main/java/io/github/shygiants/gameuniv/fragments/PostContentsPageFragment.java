@@ -1,11 +1,10 @@
 package io.github.shygiants.gameuniv.fragments;
 
-import android.content.Context;
-import android.content.res.Configuration;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
-import io.github.shygiants.gameuniv.utils.ImageHandler;
 import io.github.shygiants.gameuniv.utils.Photo;
 
 /**
@@ -56,10 +54,13 @@ public class PostContentsPageFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         photoView.setImageURI(pagePhoto.getImageUri());
-        contentText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        photoView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                photoView.setColorFilter(ImageHandler.getInstance().getColor(hasFocus? R.color.colorDimming : R.color.transparent));
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager inputMethodManager =
+                (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                return false;
             }
         });
 

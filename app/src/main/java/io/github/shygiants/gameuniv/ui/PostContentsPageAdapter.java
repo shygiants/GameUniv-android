@@ -38,4 +38,8 @@ public class PostContentsPageAdapter extends FragmentPagerAdapter {
         // Show 3 total pages.
         return (photosPicked != null)? photosPicked.size() : 0;
     }
+
+    public List<Photo> getPhotos() {
+        return photosPicked;
+    }
 }
