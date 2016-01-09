@@ -44,6 +44,8 @@
     <!--&#8230; means ellipsis(...)-->
     <string name="write_content">글쓰기&#8230;</string>
     <string name="contents_image_desc_hint">이미지 설명 추가&#8230;</string>
+    <string name="contents_title_hint">컨텐츠 제목 추가&#8230;</string>
+    <string name="contents_desc_hint">컨텐츠 설명 추가&#8230;</string>
 
     <string name="camera_roll">카메라 롤</string>
 
@@ -53,6 +55,7 @@
 
     <string name="action_confirm">확인</string>
     <string name="action_post">게시</string>
+    <string name="action_add_page">페이지 추가</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_editing">Edit Profile</string>
     <string name="large_text">
@@ -148,4 +151,7 @@
     <string name="title_game_detail">Game Detail</string>
     <string name="title_activity_post_contents">PostContentsActivity</string>
     <string name="title_activity_contents">컨텐츠 작성</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -19,6 +19,7 @@ import io.github.shygiants.gameuniv.utils.ImageHandler;
 public class PhotoPickerActivity extends AppCompatActivity {
 
     public static final String PICKED_PHOTOS = "Picked Photos";
+    public static final String ARG_IS_MULTIPLE = "Is Multiple";
 
     private PhotoAdapter photoAdapter;
     private MenuItem confirmIcon;
@@ -33,7 +34,8 @@ public class PhotoPickerActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        photoAdapter = new PhotoAdapter(this);
+        boolean isMultiple = getIntent().getBooleanExtra(ARG_IS_MULTIPLE, false);
+        photoAdapter = new PhotoAdapter(this, isMultiple);
 
         getLoaderManager().initLoader(0, null, photoAdapter);
         photoList.setLayoutManager(new GridLayoutManager(null, 3, LinearLayoutManager.VERTICAL, false));

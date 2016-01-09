@@ -5,6 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.PostContentsActivity">
     <item
+        android:id="@+id/add_page"
+        android:title="@string/action_add_page"
+        android:icon="@drawable/ic_add"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/post"
         android:title="@string/action_post"
         android:icon="@drawable/ic_done"

@@ -1,6 +1,5 @@
 package io.github.shygiants.gameuniv.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
@@ -28,6 +27,7 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.fragments.PostContentsPageFragment;
+import io.github.shygiants.gameuniv.fragments.PostContentsTitleFragment;
 import io.github.shygiants.gameuniv.ui.PostContentsPageAdapter;
 import io.github.shygiants.gameuniv.utils.ImageHandler;
 import io.github.shygiants.gameuniv.utils.Photo;
@@ -36,13 +36,15 @@ import io.github.shygiants.gameuniv.utils.RESTAPI;
 
 public class PostContentsActivity extends AppCompatActivity {
 
-    public static final int REQ_PICK_PHOTOS = 1;
+    public static final int REQ_PICK_TITLE_PHOTO = 1;
+    public static final int REQ_PICK_PAGE_PHOTOS = 2;
 
     private PostContentsPageAdapter adapter;
 
     @Bind(R.id.container)
     ViewPager viewPager;
     private MenuItem postIcon;
+    private MenuItem addIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +64,7 @@ public class PostContentsActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
         // TODO: Title first and add photos
-        Intent intent = new Intent(this, PhotoPickerActivity.class);
-        startActivityForResult(intent, REQ_PICK_PHOTOS);
+
     }
 
 
@@ -71,10 +72,17 @@ public class PostContentsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_post_contents, menu);
+
+        int colorWhite = ImageHandler.getInstance().getColor(R.color.colorWhite);
+
         postIcon = menu.findItem(R.id.post);
         Drawable iconDrawable = postIcon.getIcon();
-        iconDrawable.setTint(ImageHandler.getInstance().getColor(R.color.colorWhite));
+        iconDrawable.setTint(colorWhite);
         setPostEnabled(false);
+
+        addIcon = menu.findItem(R.id.add_page);
+        iconDrawable = addIcon.getIcon();
+        iconDrawable.setTint(colorWhite);
 
         return true;
     }
@@ -84,15 +92,18 @@ public class PostContentsActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.post) {
-            postContents();
-            return true;
-        } else if (id == android.R.id.home) {
-            cancel();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.post:
+                postContents();
+                return true;
+            case R.id.add_page:
+                Intent intent = new Intent(this, PhotoPickerActivity.class);
+                intent.putExtra(PhotoPickerActivity.ARG_IS_MULTIPLE, true);
+                startActivityForResult(intent, REQ_PICK_PAGE_PHOTOS);
+                return true;
+            case android.R.id.home:
+                cancel();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -102,16 +113,17 @@ public class PostContentsActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQ_PICK_PHOTOS) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    List<Photo> photosPicked = PhotoPickerResultResolver.resolve(data);
-                    adapter.setPhotos(photosPicked);
-                    break;
-                case Activity.RESULT_CANCELED:
-                    cancel();
-                    break;
-            }
+        if (resultCode == RESULT_CANCELED) return;
+
+        switch (requestCode) {
+            case REQ_PICK_TITLE_PHOTO:
+                // TODO: Set title photo
+                break;
+            case REQ_PICK_PAGE_PHOTOS:
+                List<Photo> photosPicked = PhotoPickerResultResolver.resolve(data);
+                adapter.setPhotos(photosPicked);
+                setPostEnabled(false);
+                break;
         }
     }
 
@@ -154,9 +166,15 @@ public class PostContentsActivity extends AppCompatActivity {
 
     public void onEdited() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments.size() <= 1) return;
         for (Fragment fragment : fragments) {
-            if (!((PostContentsPageFragment) fragment).isReadyToBePosted())
-                return;
+            if (fragment instanceof PostContentsPageFragment) {
+                if (!((PostContentsPageFragment) fragment).isReadyToBePosted())
+                    return;
+            } else {
+                if (!((PostContentsTitleFragment) fragment).isReadyToBePosted())
+                    return;
+            }
         }
 
         setPostEnabled(true);

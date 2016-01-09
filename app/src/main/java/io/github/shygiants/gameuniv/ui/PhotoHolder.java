@@ -17,7 +17,7 @@ import io.github.shygiants.gameuniv.utils.Photo;
 public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public interface OnPhotoPickListener {
-        void onSelect(PhotoHolder photoHolder);
+        boolean onSelect(PhotoHolder photoHolder);
         void onDeselect(PhotoHolder photoHolder);
     }
 
@@ -52,7 +52,12 @@ public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClick
     }
 
     public void setOrder(int order) {
-        orderText.setText(String.valueOf(order));
+        if (order == 0)
+            orderText.setVisibility(View.INVISIBLE);
+        else {
+            orderText.setText(String.valueOf(order));
+            orderText.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -65,15 +70,14 @@ public class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClick
     }
 
     private void setSelected(boolean select) {
-        isSelected = select;
-
-        if (isSelected)
-            listener.onSelect(this);
-        else
+        if (select) {
+            if (!listener.onSelect(this))
+                return;
+        } else
             listener.onDeselect(this);
 
-        int visibility = (isSelected)? View.VISIBLE : View.INVISIBLE;
-        square.setVisibility(visibility);
-        orderText.setVisibility(visibility);
+        isSelected = select;
+
+        square.setVisibility((isSelected)? View.VISIBLE : View.INVISIBLE);
     }
 }

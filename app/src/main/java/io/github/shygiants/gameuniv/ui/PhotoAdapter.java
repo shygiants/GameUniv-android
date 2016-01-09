@@ -24,13 +24,16 @@ import io.github.shygiants.gameuniv.utils.PhotoLoader;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>
         implements LoaderManager.LoaderCallbacks<List<Photo>>, PhotoHolder.OnPhotoPickListener {
 
-    private PhotoPickerActivity activity;
+    private final PhotoPickerActivity activity;
+    private final boolean isMultiple;
+
     private List<Photo> photos;
     // TODO: Consider maximum number of photos to pick
     private List<PhotoHolder> selected = new ArrayList<>();
 
-    public PhotoAdapter(PhotoPickerActivity activity) {
+    public PhotoAdapter(PhotoPickerActivity activity, boolean isMultiple) {
         this.activity = activity;
+        this.isMultiple = isMultiple;
     }
 
     public Photo[] getPicked() {
@@ -81,10 +84,15 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>
     }
 
     @Override
-    public void onSelect(PhotoHolder photoHolder) {
+    public boolean onSelect(PhotoHolder photoHolder) {
+        if (!isMultiple && selected.size() == 1) {
+            photoHolder.setOrder(0);
+            return false;
+        }
         selected.add(photoHolder);
-        photoHolder.setOrder(selected.size());
+        photoHolder.setOrder(isMultiple ? selected.size() : 0);
         notifyIfCanBeDone();
+        return true;
     }
 
     @Override

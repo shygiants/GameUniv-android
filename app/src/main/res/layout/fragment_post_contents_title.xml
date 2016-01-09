@@ -1,0 +1,70 @@
+<io.github.shygiants.gameuniv.ui.KeyboardHandlerRelativeLayout
+    android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorBlack"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".activities.PostContentsActivity">
+
+    <ImageView
+        android:id="@+id/title_image"
+        android:src="@drawable/dummy_profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@drawable/background_contents_text"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/contents_desc_padding">
+        <RelativeLayout
+            xmlns:app="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_photo"
+                android:layout_width="@dimen/card_profile_image_size"
+                android:layout_height="@dimen/card_profile_image_size"
+                android:layout_marginRight="@dimen/card_profile_image_margin"
+                app:civ_border_width="0dp" />
+            <TextView
+                android:textSize="@dimen/typo_title"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/author"
+                android:layout_toRightOf="@id/profile_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/title_text"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/typo_headline"
+            android:textStyle="bold"
+            android:hint="@string/contents_title_hint"
+            android:textColorHint="@color/colorWhite30"
+            android:background="@null"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/desc_text"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/typo_body"
+            android:hint="@string/contents_desc_hint"
+            android:textColorHint="@color/colorWhite30"
+            android:background="@null"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</io.github.shygiants.gameuniv.ui.KeyboardHandlerRelativeLayout>

@@ -114,7 +114,7 @@ public class GameFragment extends Fragment implements PostContentHolder.PostCont
     @Override
     public void onClickAddPhotos() {
         Intent intent = new Intent(getActivity(), PostContentsActivity.class);
-        startActivityForResult(intent, PostContentsActivity.REQ_PICK_PHOTOS);
+        startActivityForResult(intent, PostContentsActivity.REQ_PICK_TITLE_PHOTO);
 
         // TODO: Handle activity result
     }

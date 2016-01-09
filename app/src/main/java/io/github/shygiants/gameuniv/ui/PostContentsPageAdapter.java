@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.shygiants.gameuniv.fragments.PostContentsPageFragment;
+import io.github.shygiants.gameuniv.fragments.PostContentsTitleFragment;
 import io.github.shygiants.gameuniv.utils.Photo;
 
 /**
@@ -29,14 +30,13 @@ public class PostContentsPageAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-        return PostContentsPageFragment.newInstance(photosPicked.get(position));
+        if (position == 0) return PostContentsTitleFragment.newInstance();
+        return PostContentsPageFragment.newInstance(photosPicked.get(position - 1));
     }
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return (photosPicked != null)? photosPicked.size() : 0;
+        return (photosPicked != null)? photosPicked.size() + 1 : 1;
     }
 
     public List<Photo> getPhotos() {
