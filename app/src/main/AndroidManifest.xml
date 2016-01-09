@@ -68,7 +68,8 @@
             android:name=".activities.PostContentsActivity"
             android:label="@string/title_activity_contents"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

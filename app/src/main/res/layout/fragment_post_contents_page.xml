@@ -1,5 +1,5 @@
-<RelativeLayout
-    android:id="@+id/background"
+<io.github.shygiants.gameuniv.ui.KeyboardHandlerRelativeLayout
+    android:id="@+id/container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorBlack"
@@ -26,4 +26,4 @@
         android:layout_alignParentBottom="true"
         android:gravity="bottom|left"/>
 
-</RelativeLayout>
+</io.github.shygiants.gameuniv.ui.KeyboardHandlerRelativeLayout>

@@ -16,10 +16,7 @@ import android.view.MenuItem;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -29,20 +26,13 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpEntity;
-import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
-import cz.msebera.android.httpclient.entity.mime.content.ContentBody;
-import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.fragments.PostContentsPageFragment;
 import io.github.shygiants.gameuniv.ui.PostContentsPageAdapter;
 import io.github.shygiants.gameuniv.utils.ImageHandler;
-import io.github.shygiants.gameuniv.utils.NetworkTask;
 import io.github.shygiants.gameuniv.utils.Photo;
 import io.github.shygiants.gameuniv.utils.PhotoPickerResultResolver;
 import io.github.shygiants.gameuniv.utils.RESTAPI;
-import retrofit.Call;
-import retrofit.Retrofit;
 
 public class PostContentsActivity extends AppCompatActivity {
 
@@ -71,6 +61,7 @@ public class PostContentsActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         viewPager.setAdapter(adapter);
 
+        // TODO: Title first and add photos
         Intent intent = new Intent(this, PhotoPickerActivity.class);
         startActivityForResult(intent, REQ_PICK_PHOTOS);
     }
@@ -81,9 +72,9 @@ public class PostContentsActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_post_contents, menu);
         postIcon = menu.findItem(R.id.post);
-        postIcon.setEnabled(false);
         Drawable iconDrawable = postIcon.getIcon();
         iconDrawable.setTint(ImageHandler.getInstance().getColor(R.color.colorWhite));
+        setPostEnabled(false);
 
         return true;
     }
@@ -97,32 +88,7 @@ public class PostContentsActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.post) {
-            // TODO: Post contents
-            List<Photo> photos = adapter.getPhotos();
-            RequestParams params = new RequestParams();
-
-            try {
-                int i = 1;
-                for (Photo photo : photos) {
-                    File file = new File(photo.getImageUri().getPath());
-                    params.put("page_photo" + i, file, "multipart/form-data", "page" + i + ".png");
-                    i++;
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            AsyncHttpClient client = new AsyncHttpClient();
-//            client.addHeader("Authentication");
-            params.setForceMultipartEntityContentType(true);
-            client.put(RESTAPI.getURL() + "/games/contents", params, new JsonHttpResponseHandler() {
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.i("CONTENTS", response.toString());
-                }
-            });
-
+            postContents();
             return true;
         } else if (id == android.R.id.home) {
             cancel();
@@ -141,7 +107,6 @@ public class PostContentsActivity extends AppCompatActivity {
                 case Activity.RESULT_OK:
                     List<Photo> photosPicked = PhotoPickerResultResolver.resolve(data);
                     adapter.setPhotos(photosPicked);
-                    postIcon.setEnabled(true);
                     break;
                 case Activity.RESULT_CANCELED:
                     cancel();
@@ -153,5 +118,51 @@ public class PostContentsActivity extends AppCompatActivity {
     private void cancel() {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    private void postContents() {
+        List<Photo> photos = adapter.getPhotos();
+        RequestParams params = new RequestParams();
+
+        try {
+            int i = 1;
+            for (Photo photo : photos) {
+                File file = new File(photo.getImageUri().getPath());
+                params.put("page_photo" + i, file, "multipart/form-data", "page" + i + ".png");
+                i++;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        AsyncHttpClient client = new AsyncHttpClient();
+//            client.addHeader("Authentication");
+        params.setForceMultipartEntityContentType(true);
+        client.put(RESTAPI.getURL() + "/games/contents", params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.i("CONTENTS", response.toString());
+            }
+        });
+    }
+
+    private void setPostEnabled(boolean enabled) {
+        postIcon.getIcon().setAlpha(enabled ? 255 : (int) (255 * 0.3));
+        postIcon.setEnabled(enabled);
+    }
+
+    public void onEdited() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (!((PostContentsPageFragment) fragment).isReadyToBePosted())
+                return;
+        }
+
+        setPostEnabled(true);
+    }
+
+    public void onEditing() {
+        setPostEnabled(false);
     }
 }
