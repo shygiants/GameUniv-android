@@ -10,7 +10,7 @@ import java.util.List;
 import io.github.shygiants.gameuniv.fragments.PostContentsBaseFragment;
 import io.github.shygiants.gameuniv.fragments.PostContentsPageFragment;
 import io.github.shygiants.gameuniv.fragments.PostContentsTitleFragment;
-import io.github.shygiants.gameuniv.utils.Photo;
+import io.github.shygiants.simplephotopicker.models.Photo;
 
 /**
  * Created by SHYBook_Air on 2016. 1. 8..

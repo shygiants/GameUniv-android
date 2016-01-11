@@ -1,11 +1,8 @@
 package io.github.shygiants.gameuniv.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,9 +34,10 @@ import io.github.shygiants.gameuniv.fragments.PostContentsBaseFragment;
 import io.github.shygiants.gameuniv.ui.FloatingActionButton;
 import io.github.shygiants.gameuniv.ui.PostContentsPageAdapter;
 import io.github.shygiants.gameuniv.utils.ImageHandler;
-import io.github.shygiants.gameuniv.utils.Photo;
-import io.github.shygiants.gameuniv.utils.PhotoPickerResultResolver;
 import io.github.shygiants.gameuniv.utils.RESTAPI;
+import io.github.shygiants.simplephotopicker.activities.PhotoPickerActivity;
+import io.github.shygiants.simplephotopicker.models.Photo;
+import io.github.shygiants.simplephotopicker.utils.PhotoPickerResultResolver;
 
 public class PostContentsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -162,6 +160,8 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
             case REQ_PICK_TITLE_PHOTO:
                 titlePhoto = photosPicked.get(0);
                 initTitlePhoto();
+                setPostEnabled(false);
+                onEdited();
                 break;
             case REQ_PICK_PAGE_PHOTOS:
                 viewPager.setCurrentItem(adapter.addPhotos(photosPicked), true);

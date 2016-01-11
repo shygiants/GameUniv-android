@@ -1,8 +1,6 @@
 package io.github.shygiants.gameuniv.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +10,7 @@ import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
-import io.github.shygiants.gameuniv.activities.PostContentsActivity;
-import io.github.shygiants.gameuniv.ui.KeyboardHandlerRelativeLayout;
-import io.github.shygiants.gameuniv.utils.Photo;
+import io.github.shygiants.simplephotopicker.models.Photo;
 
 /**
  * Created by SHYBook_Air on 2016. 1. 8..

@@ -47,8 +47,6 @@
     <string name="contents_title_hint">컨텐츠 제목 추가&#8230;</string>
     <string name="contents_desc_hint">컨텐츠 설명 추가&#8230;</string>
 
-    <string name="camera_roll">카메라 롤</string>
-
     <string name="snack_bar_server_err">서버 문제</string>
     <string name="snack_bar_connection_err">인터넷 연결 문제</string>
     <string name="snack_bar_action">다시 시도</string>
