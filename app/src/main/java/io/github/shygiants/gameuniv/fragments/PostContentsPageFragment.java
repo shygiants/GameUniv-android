@@ -1,14 +1,11 @@
 package io.github.shygiants.gameuniv.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -22,19 +19,15 @@ import io.github.shygiants.gameuniv.utils.Photo;
 /**
  * Created by SHYBook_Air on 2016. 1. 8..
  */
-public class PostContentsPageFragment extends Fragment implements KeyboardHandlerRelativeLayout.OnKeyboardEventListener {
+public class PostContentsPageFragment extends PostContentsBaseFragment {
 
     private static final String ARG_PHOTO = "Photo";
 
-    private boolean readyToBePosted;
     private Photo pagePhoto;
     @Bind(R.id.content_image)
     ImageView photoView;
     @Bind(R.id.content_text)
     EditText contentText;
-    @Bind(R.id.container)
-    KeyboardHandlerRelativeLayout container;
-
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -57,30 +50,16 @@ public class PostContentsPageFragment extends Fragment implements KeyboardHandle
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_post_contents_page, container, false);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        this.container.addView(inflater.inflate(R.layout.fragment_post_contents_page, container, false));
         ButterKnife.bind(this, rootView);
 
-        this.container.setOnKeyboardEventListener(this);
         photoView.setImageURI(pagePhoto.getImageUri());
 
         return rootView;
     }
 
-    @Override
-    public void onKeyboardHide() {
-        Log.i("Keyboard", "HIDE");
-
-        readyToBePosted = !contentText.getText().toString().isEmpty();
-        ((PostContentsActivity)getActivity()).onEdited();
-    }
-
-    @Override
-    public void onKeyboardShow() {
-        Log.i("Keyboard", "SHOW");
-        ((PostContentsActivity)getActivity()).onEditing();
-    }
-
     public boolean isReadyToBePosted() {
-        return readyToBePosted;
+        return !contentText.getText().toString().isEmpty();
     }
 }

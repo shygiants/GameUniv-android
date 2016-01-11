@@ -1,7 +1,11 @@
 package io.github.shygiants.gameuniv.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +15,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -26,31 +33,49 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 import io.github.shygiants.gameuniv.R;
-import io.github.shygiants.gameuniv.fragments.PostContentsPageFragment;
-import io.github.shygiants.gameuniv.fragments.PostContentsTitleFragment;
+import io.github.shygiants.gameuniv.fragments.PostContentsBaseFragment;
+import io.github.shygiants.gameuniv.ui.FloatingActionButton;
 import io.github.shygiants.gameuniv.ui.PostContentsPageAdapter;
 import io.github.shygiants.gameuniv.utils.ImageHandler;
 import io.github.shygiants.gameuniv.utils.Photo;
 import io.github.shygiants.gameuniv.utils.PhotoPickerResultResolver;
 import io.github.shygiants.gameuniv.utils.RESTAPI;
 
-public class PostContentsActivity extends AppCompatActivity {
+public class PostContentsActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQ_PICK_TITLE_PHOTO = 1;
     public static final int REQ_PICK_PAGE_PHOTOS = 2;
 
     private PostContentsPageAdapter adapter;
 
-    @Bind(R.id.container)
+    @Bind(R.id.title_image)
+    ImageView titleImage;
+    @Bind(R.id.blurred_image)
+    ImageView blurredImage;
+    @Bind(R.id.view_pager)
     ViewPager viewPager;
+    @Bind(R.id.add_page_button)
+    FloatingActionsMenu addPageButton;
+    @Bind(R.id.write_text)
+    FloatingActionButton writeTextButton;
+    @Bind(R.id.add_photos)
+    FloatingActionButton addPhotosButton;
     private MenuItem postIcon;
-    private MenuItem addIcon;
+
+    private Photo titlePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_contents);
         ButterKnife.bind(this);
+
+        Drawable writeTextIcon = getResources().getDrawable(R.drawable.ic_create, null);
+        writeTextButton.setIconDrawable(writeTextIcon);
+        writeTextButton.setOnClickListener(this);
+        Drawable addPhotosIcon = getResources().getDrawable(R.drawable.ic_add_a_photo, null);
+        addPhotosButton.setIconDrawable(addPhotosIcon);
+        addPhotosButton.setOnClickListener(this);
 
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,6 +87,24 @@ public class PostContentsActivity extends AppCompatActivity {
 
         // Set up the ViewPager with the sections adapter.
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position != 0) return;
+
+                blurredImage.setAlpha(positionOffset);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                /* DO NOTHING */
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                /* DO NOTHING */
+            }
+        });
 
         // TODO: Title first and add photos
 
@@ -74,15 +117,14 @@ public class PostContentsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_post_contents, menu);
 
         int colorWhite = ImageHandler.getInstance().getColor(R.color.colorWhite);
+        int numOfMenuItems = menu.size();
+        for(int i = 0; i < numOfMenuItems; i++) {
+            Drawable iconDrawable = menu.getItem(i).getIcon();
+            iconDrawable.setTint(colorWhite);
+        }
 
         postIcon = menu.findItem(R.id.post);
-        Drawable iconDrawable = postIcon.getIcon();
-        iconDrawable.setTint(colorWhite);
         setPostEnabled(false);
-
-        addIcon = menu.findItem(R.id.add_page);
-        iconDrawable = addIcon.getIcon();
-        iconDrawable.setTint(colorWhite);
 
         return true;
     }
@@ -96,10 +138,10 @@ public class PostContentsActivity extends AppCompatActivity {
             case R.id.post:
                 postContents();
                 return true;
-            case R.id.add_page:
-                Intent intent = new Intent(this, PhotoPickerActivity.class);
-                intent.putExtra(PhotoPickerActivity.ARG_IS_MULTIPLE, true);
-                startActivityForResult(intent, REQ_PICK_PAGE_PHOTOS);
+            case R.id.set_title_photo:
+                startPhotoPickerActivity(false);
+                return true;
+            case R.id.view_pages:
                 return true;
             case android.R.id.home:
                 cancel();
@@ -115,18 +157,25 @@ public class PostContentsActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_CANCELED) return;
 
+        List<Photo> photosPicked = PhotoPickerResultResolver.resolve(data);
         switch (requestCode) {
             case REQ_PICK_TITLE_PHOTO:
-                // TODO: Set title photo
+                titlePhoto = photosPicked.get(0);
+                initTitlePhoto();
                 break;
             case REQ_PICK_PAGE_PHOTOS:
-                List<Photo> photosPicked = PhotoPickerResultResolver.resolve(data);
-                adapter.setPhotos(photosPicked);
+                viewPager.setCurrentItem(adapter.addPhotos(photosPicked), true);
                 setPostEnabled(false);
                 break;
         }
     }
 
+    private void initTitlePhoto() {
+        Uri imageUri = titlePhoto.getImageUri();
+        titleImage.setImageURI(imageUri);
+        blurredImage.setImageBitmap(ImageHandler.getInstance().blur(imageUri));
+        blurredImage.setAlpha(0.0f);
+    }
     private void cancel() {
         setResult(RESULT_CANCELED);
         finish();
@@ -159,6 +208,24 @@ public class PostContentsActivity extends AppCompatActivity {
         });
     }
 
+    private void startPhotoPickerActivity(boolean isMultiple) {
+        Intent intent = new Intent(this, PhotoPickerActivity.class);
+        intent.putExtra(PhotoPickerActivity.ARG_IS_MULTIPLE, isMultiple);
+        startActivityForResult(intent, (isMultiple)? REQ_PICK_PAGE_PHOTOS : REQ_PICK_TITLE_PHOTO);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_photos:
+                startPhotoPickerActivity(true);
+                break;
+            case R.id.write_text:
+                break;
+        }
+        addPageButton.collapse();
+    }
+
     private void setPostEnabled(boolean enabled) {
         postIcon.getIcon().setAlpha(enabled ? 255 : (int) (255 * 0.3));
         postIcon.setEnabled(enabled);
@@ -168,13 +235,8 @@ public class PostContentsActivity extends AppCompatActivity {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         if (fragments.size() <= 1) return;
         for (Fragment fragment : fragments) {
-            if (fragment instanceof PostContentsPageFragment) {
-                if (!((PostContentsPageFragment) fragment).isReadyToBePosted())
-                    return;
-            } else {
-                if (!((PostContentsTitleFragment) fragment).isReadyToBePosted())
-                    return;
-            }
+            if (!((PostContentsBaseFragment) fragment).isReadyToBePosted())
+                return;
         }
 
         setPostEnabled(true);

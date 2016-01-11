@@ -55,7 +55,8 @@
 
     <string name="action_confirm">확인</string>
     <string name="action_post">게시</string>
-    <string name="action_add_page">페이지 추가</string>
+    <string name="action_set_title_photo">타이틀 이미지 설정</string>
+    <string name="action_view_pages">페이지 모두 보기</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_editing">Edit Profile</string>
     <string name="large_text">

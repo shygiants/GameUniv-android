@@ -84,25 +84,28 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>
     }
 
     @Override
-    public boolean onSelect(PhotoHolder photoHolder) {
-        if (!isMultiple && selected.size() == 1) {
-            photoHolder.setOrder(0);
-            return false;
-        }
+    public void onSelect(PhotoHolder photoHolder) {
+        if (!isMultiple) {
+            if (!selected.isEmpty()) {
+                selected.get(0).setSelected(false, 0);
+                selected.clear();
+            }
+            photoHolder.setSelected(true, 0);
+        } else
+            photoHolder.setSelected(true, selected.size() + 1);
+
         selected.add(photoHolder);
-        photoHolder.setOrder(isMultiple ? selected.size() : 0);
         notifyIfCanBeDone();
-        return true;
     }
 
     @Override
     public void onDeselect(PhotoHolder photoHolder) {
         int index = selected.indexOf(photoHolder);
         ListIterator<PhotoHolder> iter = selected.listIterator(index);
-        for (int i = index; iter.hasNext(); i++) {
-            iter.next().setOrder(i);
-        }
+        for (int i = index; iter.hasNext(); i++)
+            iter.next().setSelected(true, i);
         selected.remove(index);
+        photoHolder.setSelected(false, 0);
         notifyIfCanBeDone();
     }
 

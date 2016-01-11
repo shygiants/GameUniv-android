@@ -1,7 +1,6 @@
 package io.github.shygiants.gameuniv.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.shygiants.gameuniv.R;
-import io.github.shygiants.gameuniv.activities.PostContentsActivity;
 import io.github.shygiants.gameuniv.models.User;
-import io.github.shygiants.gameuniv.ui.KeyboardHandlerRelativeLayout;
 import io.github.shygiants.gameuniv.utils.ContentsStore;
 
-public class PostContentsTitleFragment extends Fragment implements KeyboardHandlerRelativeLayout.OnKeyboardEventListener{
+public class PostContentsTitleFragment extends PostContentsBaseFragment {
 
     public PostContentsTitleFragment() {
         // Required empty public constructor
@@ -43,10 +40,6 @@ public class PostContentsTitleFragment extends Fragment implements KeyboardHandl
     EditText title;
     @Bind(R.id.desc_text)
     EditText desc;
-    @Bind(R.id.container)
-    KeyboardHandlerRelativeLayout container;
-
-    private boolean readyToBePosted;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,30 +50,19 @@ public class PostContentsTitleFragment extends Fragment implements KeyboardHandl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_post_contents_title, container, false);
-        ButterKnife.bind(this, view);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        this.container.addView(inflater.inflate(R.layout.fragment_post_contents_title, container, false));
+        ButterKnife.bind(this, rootView);
 
-        this.container.setOnKeyboardEventListener(this);
         User user = ContentsStore.getInstance().getUser();
         user.getProfilePhoto(profilePhoto);
         author.setText(user.getUserName());
 
-        return view;
-    }
-
-    @Override
-    public void onKeyboardHide() {
-        readyToBePosted = (!title.getText().toString().isEmpty()
-                        && !desc.getText().toString().isEmpty());
-        ((PostContentsActivity)getActivity()).onEdited();
-    }
-
-    @Override
-    public void onKeyboardShow() {
-        ((PostContentsActivity)getActivity()).onEditing();
+        return rootView;
     }
 
     public boolean isReadyToBePosted() {
-        return readyToBePosted;
+        return (!title.getText().toString().isEmpty()
+                && !desc.getText().toString().isEmpty());
     }
 }

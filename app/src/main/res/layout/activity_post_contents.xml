@@ -26,9 +26,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/container"
+    <RelativeLayout
+        android:background="@color/colorBlack"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/title_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/blurred_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include layout="@layout/fab_add_contents_page"/>
+
+    </RelativeLayout>
+
+
 
 </android.support.design.widget.CoordinatorLayout>

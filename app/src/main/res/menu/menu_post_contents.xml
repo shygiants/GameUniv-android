@@ -5,11 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.PostContentsActivity">
     <item
-        android:id="@+id/add_page"
-        android:title="@string/action_add_page"
-        android:icon="@drawable/ic_add"
+        android:id="@+id/view_pages"
+        android:title="@string/action_view_pages"
+        android:icon="@drawable/ic_view_comfy"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/set_title_photo"
+        android:title="@string/action_set_title_photo"
+        android:icon="@drawable/ic_photo"
+        android:orderInCategory="100"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/post"
         android:title="@string/action_post"
