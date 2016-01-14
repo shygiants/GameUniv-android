@@ -10,6 +10,7 @@ import java.util.List;
 import io.github.shygiants.gameuniv.fragments.PostContentsBaseFragment;
 import io.github.shygiants.gameuniv.fragments.PostContentsPageFragment;
 import io.github.shygiants.gameuniv.fragments.PostContentsTitleFragment;
+import io.github.shygiants.gameuniv.models.Contents;
 import io.github.shygiants.simplephotopicker.models.Photo;
 
 /**
@@ -49,6 +50,22 @@ public class PostContentsPageAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return (photosPicked != null)? photosPicked.size() + 1 : 1;
+    }
+
+    public void setTitlePhoto(Photo titlePhoto) {
+        ((PostContentsTitleFragment)fragments.get(0)).setTitlePhoto(titlePhoto);
+    }
+
+    public Contents getContents() {
+        Contents contents = null;
+        for (PostContentsBaseFragment fragment : fragments) {
+            if (fragment instanceof PostContentsTitleFragment)
+                contents = ((PostContentsTitleFragment) fragment).getContents();
+            else
+                contents.addPage(((PostContentsPageFragment) fragment).getPage());
+        }
+
+        return contents;
     }
 
     public List<Photo> getPhotos() {

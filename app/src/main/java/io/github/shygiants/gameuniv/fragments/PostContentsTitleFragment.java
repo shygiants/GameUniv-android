@@ -11,8 +11,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.shygiants.gameuniv.R;
+import io.github.shygiants.gameuniv.models.Contents;
 import io.github.shygiants.gameuniv.models.User;
 import io.github.shygiants.gameuniv.utils.ContentsStore;
+import io.github.shygiants.simplephotopicker.models.Photo;
 
 public class PostContentsTitleFragment extends PostContentsBaseFragment {
 
@@ -31,6 +33,8 @@ public class PostContentsTitleFragment extends PostContentsBaseFragment {
         PostContentsTitleFragment fragment = new PostContentsTitleFragment();
         return fragment;
     }
+
+    private Photo titlePhoto;
 
     @Bind(R.id.profile_photo)
     CircleImageView profilePhoto;
@@ -63,6 +67,15 @@ public class PostContentsTitleFragment extends PostContentsBaseFragment {
 
     public boolean isReadyToBePosted() {
         return (!title.getText().toString().isEmpty()
-                && !desc.getText().toString().isEmpty());
+                && !desc.getText().toString().isEmpty()
+                && titlePhoto != null);
+    }
+
+    public void setTitlePhoto(Photo photo) {
+        titlePhoto = photo;
+    }
+
+    public Contents getContents() {
+        return new Contents(title.getText().toString(), desc.getText().toString(), titlePhoto);
     }
 }

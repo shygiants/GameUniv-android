@@ -16,10 +16,12 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -31,8 +33,11 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 import io.github.shygiants.gameuniv.R;
 import io.github.shygiants.gameuniv.fragments.PostContentsBaseFragment;
+import io.github.shygiants.gameuniv.models.Contents;
+import io.github.shygiants.gameuniv.models.Game;
 import io.github.shygiants.gameuniv.ui.FloatingActionButton;
 import io.github.shygiants.gameuniv.ui.PostContentsPageAdapter;
+import io.github.shygiants.gameuniv.utils.ContentsStore;
 import io.github.shygiants.gameuniv.utils.ImageHandler;
 import io.github.shygiants.gameuniv.utils.RESTAPI;
 import io.github.shygiants.simplephotopicker.activities.PhotoPickerActivity;
@@ -41,10 +46,13 @@ import io.github.shygiants.simplephotopicker.utils.PhotoPickerResultResolver;
 
 public class PostContentsActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String ARG_GAME = "Game";
+
     public static final int REQ_PICK_TITLE_PHOTO = 1;
     public static final int REQ_PICK_PAGE_PHOTOS = 2;
 
     private PostContentsPageAdapter adapter;
+    private Game game;
 
     @Bind(R.id.title_image)
     ImageView titleImage;
@@ -60,13 +68,14 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
     FloatingActionButton addPhotosButton;
     private MenuItem postIcon;
 
-    private Photo titlePhoto;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_contents);
         ButterKnife.bind(this);
+
+        Gson gson = new Gson();
+        game = gson.fromJson(getIntent().getStringExtra(ARG_GAME), Game.class);
 
         Drawable writeTextIcon = getResources().getDrawable(R.drawable.ic_create, null);
         writeTextButton.setIconDrawable(writeTextIcon);
@@ -158,8 +167,9 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
         List<Photo> photosPicked = PhotoPickerResultResolver.resolve(data);
         switch (requestCode) {
             case REQ_PICK_TITLE_PHOTO:
-                titlePhoto = photosPicked.get(0);
-                initTitlePhoto();
+                Photo titlePhoto = photosPicked.get(0);
+                showTitlePhoto(titlePhoto);
+                adapter.setTitlePhoto(titlePhoto);
                 setPostEnabled(false);
                 onEdited();
                 break;
@@ -170,7 +180,7 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void initTitlePhoto() {
+    private void showTitlePhoto(Photo titlePhoto) {
         Uri imageUri = titlePhoto.getImageUri();
         titleImage.setImageURI(imageUri);
         blurredImage.setImageBitmap(ImageHandler.getInstance().blur(imageUri));
@@ -182,28 +192,40 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void postContents() {
-        List<Photo> photos = adapter.getPhotos();
-        RequestParams params = new RequestParams();
+        Contents contents = adapter.getContents();
+        File[] files = contents.getPhotoFiles();
 
+        RequestParams params = new RequestParams();
         try {
-            int i = 1;
-            for (Photo photo : photos) {
-                File file = new File(photo.getImageUri().getPath());
-                params.put("page_photo" + i, file, "multipart/form-data", "page" + i + ".png");
-                i++;
-            }
+            Gson gson = new Gson();
+            params.put("contents_photos", files);
+            params.put("contents", gson.toJson(contents));
         } catch (FileNotFoundException e) {
+            // TODO: Handle exception
             e.printStackTrace();
         }
 
         AsyncHttpClient client = new AsyncHttpClient();
-//            client.addHeader("Authentication");
+        client.addHeader("Authorization", ContentsStore.getInstance().getUser().getAuthToken());
         params.setForceMultipartEntityContentType(true);
-        client.put(RESTAPI.getURL() + "/games/contents", params, new JsonHttpResponseHandler() {
+        client.put(RESTAPI.getURL() + "/games/" + game.getGameId() + "/contents", params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.i("CONTENTS", response.toString());
+                if (statusCode == 200) {
+                    try {
+                        String contentsId = response.getString("contents_id");
+                        Log.i("ContentsID", contentsId);
+                        postComplete();
+                    } catch (JSONException e) {
+                        // TODO: Handle Error
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    // TODO: Handle Error
+                }
+
             }
         });
     }
@@ -211,7 +233,7 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
     private void startPhotoPickerActivity(boolean isMultiple) {
         Intent intent = new Intent(this, PhotoPickerActivity.class);
         intent.putExtra(PhotoPickerActivity.ARG_IS_MULTIPLE, isMultiple);
-        startActivityForResult(intent, (isMultiple)? REQ_PICK_PAGE_PHOTOS : REQ_PICK_TITLE_PHOTO);
+        startActivityForResult(intent, (isMultiple) ? REQ_PICK_PAGE_PHOTOS : REQ_PICK_TITLE_PHOTO);
     }
 
     @Override
@@ -244,5 +266,10 @@ public class PostContentsActivity extends AppCompatActivity implements View.OnCl
 
     public void onEditing() {
         setPostEnabled(false);
+    }
+
+    private void postComplete() {
+        setResult(RESULT_OK);
+        finish();
     }
 }

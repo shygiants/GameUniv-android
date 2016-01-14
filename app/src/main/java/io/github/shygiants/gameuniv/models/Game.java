@@ -30,6 +30,10 @@ public class Game extends Response implements Target, TimelineOwner {
 
     private OnCreateGradientListener listener;
 
+    public String getGameId() {
+        return _id;
+    }
+
     public String getGameName() {
         return gameName;
     }

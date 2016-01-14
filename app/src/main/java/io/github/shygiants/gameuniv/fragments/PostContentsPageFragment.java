@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.github.shygiants.gameuniv.R;
+import io.github.shygiants.gameuniv.models.Contents;
 import io.github.shygiants.simplephotopicker.models.Photo;
 
 /**
@@ -57,5 +58,9 @@ public class PostContentsPageFragment extends PostContentsBaseFragment {
 
     public boolean isReadyToBePosted() {
         return !contentText.getText().toString().isEmpty();
+    }
+
+    public Contents.Page getPage() {
+        return new Contents.Page(pagePhoto, contentText.getText().toString());
     }
 }
