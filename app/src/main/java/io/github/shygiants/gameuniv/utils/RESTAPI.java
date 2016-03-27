@@ -12,7 +12,8 @@ import retrofit.Retrofit;
  */
 public class RESTAPI {
 
-    private final static String apiEndPoint = "game-univ-back-end-shygiants.c9users.io";
+    private final static String apiEndPoint = "ec2-52-79-105-229.ap-northeast-2.compute.amazonaws.com";
+//    private final static String apiEndPoint = "game-univ-back-end-shygiants.c9users.io";
 //    private final static String apiEndPoint = "172.30.21.55";
     // 학회실
 //    private final static String apiEndPoint = "192.168.0.26";
