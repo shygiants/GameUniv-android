@@ -36,7 +36,7 @@ public class RESTAPI {
 //        return "http://" + apiEndPoint + ":" + port;
 //    }
     public static String getURL() {
-        return "https://" + apiEndPoint;
+        return "http://" + apiEndPoint + ":" + port;
     }
 
     private Retrofit retrofit;
